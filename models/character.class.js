@@ -13,6 +13,14 @@ class Character extends MovableObject {
     ];
     world;
     walking_sound = new Audio('audio/walking_fast_char.mp3');
+    i = 0;
+    currentPlaying;
+    jump_sounds = [
+        new Audio('audio/char_jump/jump_1.mp3'),
+        new Audio('audio/char_jump/jump_2.mp3'),
+        new Audio('audio/char_jump/jump_3.mp3'),
+        new Audio('audio/char_jump/jump_4.mp3'),
+    ]
     constructor() {
         super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -37,9 +45,19 @@ class Character extends MovableObject {
             }
             if (this.world.keyboard.SPACE) {
                 this.y = + this.speed;
+
+                this.currentPlaying = this.jump_sounds[0];
+
+                this.currentPlaying.play();
+                this.i++;
+                if (this.i > 3) {
+                    this.i = 0;
+                }
+
                 setTimeout(() => {
                     this.y = 205;
-                }, 500);
+
+                }, 200);
             }
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
@@ -48,11 +66,8 @@ class Character extends MovableObject {
             if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
 
                 //Walking animation
-                let i = this.currentImage % this.IMAGES_WALKING.length; // let i = 0 % 6; => 1, Rest 1
-                // let i = 0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0
-                let path = this.IMAGES_WALKING[i];
-                this.img = this.imageCache[path];
-                this.currentImage++;
+                this.playAnimation(this.IMAGES_WALKING);
+
             }
 
         }, 1000 / 25)

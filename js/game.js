@@ -25,7 +25,7 @@ window.addEventListener('keyup', () => {
 })
 
 window.addEventListener('keydown', (event) => {
-    console.log(event)
+
     if (event.code == 'ArrowRight') {
         keyboard.RIGHT = true;
     }
@@ -44,7 +44,7 @@ window.addEventListener('keydown', (event) => {
 })
 
 window.addEventListener('keyup', (event) => {
-    console.log(event)
+
     if (event.code == 'ArrowRight') {
         keyboard.RIGHT = false;
     }
@@ -61,3 +61,5 @@ window.addEventListener('keyup', (event) => {
         keyboard.SPACE = false;
     }
 })
+
+function isPlaying(audelem) { return !audelem.paused; }

@@ -1,6 +1,7 @@
 class SmallChicken extends MovableObject {
-    height = 90;
-    y = 340;
+    height = 50;
+    width = 40;
+    y = 380;
     chicken_sound = new Audio('audio/chicken_small.mp3');
 
     IMAGES_WALKING = [
@@ -22,15 +23,12 @@ class SmallChicken extends MovableObject {
         this.chicken_sound.volume = 0.5;
         this.moveLeft();
         setInterval(() => {
+            this.playAnimation(this.IMAGES_WALKING);
 
-            let i = this.currentImage % this.IMAGES_WALKING.length; // let i = 0 % 6; => 1, Rest 1
-            // let i = 0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0
-            let path = this.IMAGES_WALKING[i];
-            this.img = this.imageCache[path];
             if (this.chicken_sound.play() == false) {
                 this.chicken_sound.play();
             }
-            this.currentImage++;
+
         }, 250)
 
 
