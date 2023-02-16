@@ -1,12 +1,14 @@
 let canvas;
 let ctx;
 let world;
+let timeout;
 let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById('canvas');
     setCanvasXandY(canvas);
     world = new World(canvas, keyboard);
+    setLongIdleTimeout();
 
     console.log('My Character is', world.character);
 }
@@ -18,6 +20,7 @@ function setCanvasXandY(canvas) {
 
 window.addEventListener('keydown', () => {
     keyboard.ACTIVE = true;
+    resetTimeout();
 })
 
 window.addEventListener('keyup', () => {
@@ -63,3 +66,15 @@ window.addEventListener('keyup', (event) => {
 })
 
 function isPlaying(audelem) { return !audelem.paused; }
+
+function setLongIdleTimeout() {
+    timeout = setTimeout(() => {
+        world.character.renderLongIdleImages = true;
+    }, 7000);
+}
+
+function resetTimeout() {
+    world.character.renderLongIdleImages = false;
+    clearTimeout(timeout);
+    setLongIdleTimeout();
+}
