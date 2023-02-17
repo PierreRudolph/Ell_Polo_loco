@@ -1,7 +1,7 @@
 class Character extends MovableObject {
     height = 220;
     width = 105;
-    y = 205;
+    y = 200;
     speed = 10;
     renderLongIdleImages = false;
     IMAGES_WALKING = [
@@ -86,6 +86,7 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
+        this.applyGravity();
     }
 
     animate() {
@@ -104,37 +105,37 @@ class Character extends MovableObject {
                 this.x -= this.speed;
                 this.walking_sound.play();
             }
-            if (this.world.keyboard.SPACE) {
 
-                this.y = + this.speed;
+            console.log('this speedY', this.speedY)
+            if (this.world.keyboard.SPACE) {
+                this.speedY = 20;
                 this.currentPlaying = this.jump_sounds[0];
                 this.currentPlaying.play();
                 this.i++;
                 if (this.i > 3) {
                     this.i = 0;
                 }
-                setTimeout(() => {
-                    this.y = 205;
-                }, 250);
             }
+
             this.world.camera_x = -this.x + 100;
 
         }, 1000 / 60);
 
         setInterval(() => {
-            if (this.world.keyboard.SPACE) {
-                this.playAnimation(this.IMAGES_JUMPING);
+            if (!this.isAboveGround()) {
+                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                    //Walking animation
+                    this.playAnimation(this.IMAGES_WALKING);
+                }
             }
-
-            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-
-                //Walking animation
-                this.playAnimation(this.IMAGES_WALKING);
-
-            }
-
 
         }, 1000 / 25)
+
+        setInterval(() => {
+            if (this.isAboveGround()) {
+                this.playAnimation(this.IMAGES_JUMPING);
+            }
+        }, 1000 / 12)
 
         setInterval(() => {
             if (this.renderLongIdleImages) {
