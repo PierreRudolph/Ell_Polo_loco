@@ -1,23 +1,38 @@
 class World {
     character = new Character();
     level = level1;
-
     BackgroundObjects = level1.BackgroundObjects;
 
     ctx;
     canvas;
     keyboard;
     camera_x = 0;
+
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
-        this.draw();
         this.setWorld();
+        this.draw();
+        this.checkCollisions();
+        this.character.isDead(this.character);
     }
 
     setWorld() {
         this.character.world = this;
+    }
+
+    checkCollisions() {
+        setInterval(() => {
+            this.level.enemies.forEach(enemy => {
+                if (this.character.isColliding(enemy)) {
+                    this.character.health -= 20;
+                    console.log(this.character.health)
+
+                    this.character.playAnimation(this.character.IMAGES_HURT);
+                }
+            });
+        }, 1000);
     }
 
     draw() {
@@ -29,6 +44,7 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.level.collectables);
 
         this.ctx.translate(-this.camera_x, 0);
 
@@ -47,16 +63,24 @@ class World {
 
     addToMap(model) {
         if (model.otherDirection) {
-            this.ctx.save();
-            this.ctx.translate(model.width, 0);
-            this.ctx.scale(-1, 1);
-            model.x = model.x * -1;
+            this.flipImage(model);
         }
-        this.ctx.drawImage(model.img, model.x, model.y, model.width, model.height);
+        model.draw(this.ctx);
+        model.drawHitbox(this.ctx);
         if (model.otherDirection) {
-            model.x = model.x * -1;
-            this.ctx.restore();
+            this.flipImageBack(model);
         }
     }
 
+    flipImage(model) {
+        this.ctx.save();
+        this.ctx.translate(model.width, 0);
+        this.ctx.scale(-1, 1);
+        model.X = model.X * -1;
+    }
+
+    flipImageBack(model) {
+        model.X = model.X * -1;
+        this.ctx.restore();
+    }
 }

@@ -4,6 +4,10 @@ class Character extends MovableObject {
     y = 200;
     speed = 10;
     renderLongIdleImages = false;
+    world;
+    walking_sound = new Audio('audio/walking_fast_char.mp3');
+    currentPlaying;
+    i = 0;
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',
@@ -67,16 +71,12 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-57.png'
     ];
 
-    world;
-    walking_sound = new Audio('audio/walking_fast_char.mp3');
-    i = 0;
-    currentPlaying;
     jump_sounds = [
-        new Audio('audio/char_jump/jump_1.mp3'),
-        new Audio('audio/char_jump/jump_2.mp3'),
-        new Audio('audio/char_jump/jump_3.mp3'),
-        new Audio('audio/char_jump/jump_4.mp3'),
-    ]
+        'audio/char_jump/jump_1.mp3',
+        'audio/char_jump/jump_2.mp3',
+        'audio/char_jump/jump_3.mp3',
+        'audio/char_jump/jump_4.mp3'
+    ];
     constructor() {
         super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -87,38 +87,28 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
         this.applyGravity();
+
     }
 
     animate() {
 
         setInterval(() => {
             this.walking_sound.pause();
-            if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+            if (this.world.keyboard.RIGHT && this.X < this.world.level.level_end_x) {
+                this.moveRight();
                 this.otherDirection = false;
-                //move Right
-                this.x += this.speed;
-                this.walking_sound.play();
+                //this.playCharWalkingSound();
             }
-            if (this.world.keyboard.LEFT && this.x > 0) {
+            if (this.world.keyboard.LEFT && this.X > 0) {
+                this.moveLeft();
                 this.otherDirection = true;
-                //move Left
-                this.x -= this.speed;
-                this.walking_sound.play();
+                //this.playCharWalkingSound();
             }
-
-            console.log('this speedY', this.speedY)
-            if (this.world.keyboard.SPACE) {
-                this.speedY = 20;
-                this.currentPlaying = this.jump_sounds[0];
-                this.currentPlaying.play();
-                this.i++;
-                if (this.i > 3) {
-                    this.i = 0;
-                }
+            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+                this.jump();
+                //this.playCharJumpSounds();
             }
-
-            this.world.camera_x = -this.x + 100;
-
+            this.world.camera_x = -this.X + 100;
         }, 1000 / 60);
 
         setInterval(() => {
@@ -128,7 +118,6 @@ class Character extends MovableObject {
                     this.playAnimation(this.IMAGES_WALKING);
                 }
             }
-
         }, 1000 / 25)
 
         setInterval(() => {
@@ -143,11 +132,24 @@ class Character extends MovableObject {
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
-
         }, 1000 / 4)
     }
 
-    jump() {
+    playCharWalkingSound() {
+        this.walking_sound.play();
+    }
 
+    playCharJumpSounds() {
+        setTimeout(() => {
+            if (this.currentPlaying) {
+                this.currentPlaying.pause();
+            }
+            this.currentPlaying = new Audio(this.jump_sounds[this.i]);
+            this.currentPlaying.play();
+            this.i++;
+            if (this.i >= 3) {
+                this.i = 0;
+            }
+        }, 100)
     }
 }
