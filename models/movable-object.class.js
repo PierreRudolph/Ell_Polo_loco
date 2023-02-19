@@ -22,16 +22,6 @@ class MovableObject extends DrawableObject {
         return this.y < 200;
     }
 
-    drawHitbox(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Coin) {
-            ctx.beginPath();
-            ctx.lineWidth = "5";
-            ctx.strokeStyle = "blue";
-            ctx.rect(this.X, this.y, this.width, this.height);
-            ctx.stroke();
-        }
-    }
-
     playAnimation(images) {
         let i = this.currentImage % images.length;
         // let i = 0 % 6; => 1, Rest 1

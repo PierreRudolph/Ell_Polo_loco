@@ -1,6 +1,4 @@
-class Statusbar extends MovableObject {
-    y = 20;
-    X = 40;
+class StatusbarHealth extends DrawableObject {
     percentage = 100;
     IMAGES = [
         'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
@@ -15,6 +13,10 @@ class Statusbar extends MovableObject {
         super();
         this.loadImages(this.IMAGES);
         this.setPercentage(100);
+        this.X = 30;
+        this.y = 0;
+        this.width = 200;
+        this.height = 60;
     }
 
     setPercentage(percentage) {
@@ -38,6 +40,4 @@ class Statusbar extends MovableObject {
             return 0;
         }
     }
-
-
 }

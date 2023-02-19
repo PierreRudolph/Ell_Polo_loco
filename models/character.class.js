@@ -116,7 +116,7 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else {
                 if (this.isHurt()) {
-                    this.world.statusbar.setPercentage(this.health);
+                    this.world.statusbarHealth.setPercentage(this.health);
                     this.playAnimation(this.IMAGES_HURT);
                 } else {
                     if (!this.isAboveGround()) {
