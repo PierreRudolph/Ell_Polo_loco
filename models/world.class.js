@@ -1,5 +1,6 @@
 class World {
     character = new Character();
+    statusbar = new Statusbar();
     level = level1;
     BackgroundObjects = level1.BackgroundObjects;
 
@@ -15,24 +16,11 @@ class World {
         this.setWorld();
         this.draw();
         this.checkCollisions();
-        this.character.isDead(this.character);
     }
 
     setWorld() {
         this.character.world = this;
-    }
-
-    checkCollisions() {
-        setInterval(() => {
-            this.level.enemies.forEach(enemy => {
-                if (this.character.isColliding(enemy)) {
-                    this.character.health -= 20;
-                    console.log(this.character.health)
-
-                    this.character.playAnimation(this.character.IMAGES_HURT);
-                }
-            });
-        }, 1000);
+        this.statusbar.world = this;
     }
 
     draw() {
@@ -43,6 +31,7 @@ class World {
         this.addObjectsToMap(this.level.BackgroundObjects);
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
+        this.addToMap(this.statusbar);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
 
@@ -82,5 +71,16 @@ class World {
     flipImageBack(model) {
         model.X = model.X * -1;
         this.ctx.restore();
+    }
+
+    checkCollisions() {
+        setInterval(() => {
+            this.level.enemies.forEach(enemy => {
+                if (this.character.isColliding(enemy)) {
+                    this.character.hit();
+                    console.log(this.character.health);
+                }
+            });
+        }, 500);
     }
 }

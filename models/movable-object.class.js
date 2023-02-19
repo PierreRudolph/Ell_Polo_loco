@@ -1,17 +1,13 @@
-class MovableObject {
-    X = 120;
-    y;
-    img;
-    height = 150;
-    width = 100;
-    imageCache = {};
-    currentImage = 0;
+class MovableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     gainSpeedY = 20;
     offsetY = 0;
     acceleration = 2.5;
     health = 100;
+    lastHit = 0;
+
+
     applyGravity() {
         setInterval(() => {
             if (this.isAboveGround() || this.offsetY > 0) {
@@ -24,29 +20,6 @@ class MovableObject {
 
     isAboveGround() {
         return this.y < 200;
-    }
-
-    //loadiMage('img/test.png);
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
-    }
-
-    /**
-     * 
-     * @param {Array} arr - ['img/image1.png','img/image2.png'...] 
-     */
-    loadImages(arr) {
-        arr.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
-
-    }
-
-    draw(ctx) {
-        ctx.drawImage(this.img, this.X, this.y, this.width, this.height);
     }
 
     drawHitbox(ctx) {
@@ -80,19 +53,25 @@ class MovableObject {
         this.offsetY = 25;
     }
 
-    isDead(obj) {
-        setInterval(() => {
-            if (obj.health <= 0 && obj.health > -20) {
-                this.isDeadAnimation(obj);
-                console.log('isDEAD')
-            }
-        }, 1000 / 200)
+    hit() {
+        this.health -= 20;
+
+        if (this.health < 0) {
+            this.health = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
     }
 
-    isDeadAnimation(obj) {
-        setInterval(() => {
-            this.playAnimation(obj.IMAGES_DEAD);
-        }, 1000 / 12)
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit;//Difference in ms
+        timepassed = timepassed / 1000; //ms geteilt durch Tausen, ergibt s.
+        return timepassed < 1;
+    }
+
+    isDead() {
+        return this.health == 0;
+
     }
 
     // Bessere Formel zur Kollisionsberechnung (Genauer)
@@ -102,8 +81,8 @@ class MovableObject {
                 (this.y + this.offsetY + this.height) >= obj.y &&
                 (this.y + this.offsetY) <= (obj.y + obj.height)
         }
-        //&&
-        //obj.onCollisionCourse;
     }
+    //&&
+    //obj.onCollisionCourse;
 }// Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt.
         //Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
