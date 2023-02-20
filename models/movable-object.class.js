@@ -52,6 +52,10 @@ class MovableObject extends DrawableObject {
         this.X += this.speed;
     }
 
+    setCoinBar() {
+        this.status
+    }
+
     hit() {
         this.health -= 20;
 

@@ -3,7 +3,7 @@ class World {
     statusbarHealth = new StatusbarHealth();
     statusbarCoin = new StatusbarCoin();
     statusbarBottle = new StatusbarBottle();
-    throwableObject = new ThrowableObject();
+    throwableObjects = [];
     level = level1;
     BackgroundObjects = level1.BackgroundObjects;
 
@@ -39,9 +39,10 @@ class World {
         this.addToMap(this.statusbarHealth);
         this.addToMap(this.statusbarCoin);
         this.addToMap(this.statusbarBottle);
-        this.addToMap(this.throwableObject);
+        //this.addToMap(this.throwableObjects);
         this.ctx.translate(this.camera_x, 0);
 
+        this.addObjectsToMap(this.throwableObjects);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
 
@@ -85,18 +86,38 @@ class World {
 
     run() {
         setInterval(() => {
-
             this.checkCollisions();
-
+            this.checkThrowObjects();
         }, 500);
     }
 
-    checkCollisions() {
+    checkThrowObjects() {
+        if (this.keyboard.D) {
+            let bottle = new ThrowableObject(this.character.X + 100, this.character.y + 100);
+            this.throwableObjects.push(bottle);
+            this.checkCollisions(bottle);
+        }
+    }
+
+    checkCollisions(bottle) {
         this.level.enemies.forEach(enemy => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
                 console.log(this.character.health);
             }
+            if (bottle) {
+                if (bottle.isColliding(enemy)) {
+                    enemy.health -= 100;
+                }
+            }
         });
+
+        this.level.collectables.forEach(collectable => {
+            if (this.character.isColliding(collectable)) {
+                this.character.collected_coins.push(collectable);
+                this.level.collectables.splice(0, 1);
+                this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20)
+            }
+        })
     }
 }
