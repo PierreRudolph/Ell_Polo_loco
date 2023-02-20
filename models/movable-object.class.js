@@ -19,7 +19,12 @@ class MovableObject extends DrawableObject {
 
 
     isAboveGround() {
-        return this.y < 200;
+        if (this instanceof ThrowableObject) {//throwable object should always fall
+            return true;
+        } else {
+            return this.y < 200;
+
+        }
     }
 
     playAnimation(images) {
@@ -41,6 +46,10 @@ class MovableObject extends DrawableObject {
 
     jump() {
         this.offsetY = 25;
+    }
+
+    throw() {
+        this.X += this.speed;
     }
 
     hit() {

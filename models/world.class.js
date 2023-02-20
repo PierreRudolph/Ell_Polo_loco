@@ -3,6 +3,7 @@ class World {
     statusbarHealth = new StatusbarHealth();
     statusbarCoin = new StatusbarCoin();
     statusbarBottle = new StatusbarBottle();
+    throwableObject = new ThrowableObject();
     level = level1;
     BackgroundObjects = level1.BackgroundObjects;
 
@@ -17,7 +18,7 @@ class World {
         this.keyboard = keyboard;
         this.setWorld();
         this.draw();
-        this.checkCollisions();
+        this.run();
     }
 
     setWorld() {
@@ -38,6 +39,7 @@ class World {
         this.addToMap(this.statusbarHealth);
         this.addToMap(this.statusbarCoin);
         this.addToMap(this.statusbarBottle);
+        this.addToMap(this.throwableObject);
         this.ctx.translate(this.camera_x, 0);
 
         this.addObjectsToMap(this.level.enemies);
@@ -81,14 +83,20 @@ class World {
         this.ctx.restore();
     }
 
-    checkCollisions() {
+    run() {
         setInterval(() => {
-            this.level.enemies.forEach(enemy => {
-                if (this.character.isColliding(enemy)) {
-                    this.character.hit();
-                    console.log(this.character.health);
-                }
-            });
+
+            this.checkCollisions();
+
         }, 500);
+    }
+
+    checkCollisions() {
+        this.level.enemies.forEach(enemy => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit();
+                console.log(this.character.health);
+            }
+        });
     }
 }

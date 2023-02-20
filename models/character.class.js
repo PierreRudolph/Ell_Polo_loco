@@ -108,6 +108,9 @@ class Character extends MovableObject {
                 this.jump();
                 //this.playCharJumpSounds();
             }
+            if (this.world.keyboard.D) {
+                this.throw();
+            }
             this.world.camera_x = -this.X + 100;
         }, 1000 / 60);
 
