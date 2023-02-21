@@ -136,40 +136,28 @@ class World {
 
     checkCollisions() {
         this.level.enemies.forEach(enemy => {
-            if (this.character.isColliding(enemy)) {
-                this.character.hit();
-            }
-
-            if (this.throwableObjects.length > 0) {
-                this.throwableObjects.forEach(obj => {
-                    if (obj.isColliding(enemy)) {
-                        obj.colliding = true;
-                    }
-                })
-            }
-
-            /*if (this.throwableObjects.length > 0) {
-                if (this.throwableObjects.isColliding(enemy)) {
-                    //this.throwableObjects.splice(0, 1);
-                    //enemy.hit();
-                    //bottle.playAnimation();
-                    console.log('bottle is coliding enemy');
-                }
-            }*/
+            this.checkCharCollisions(enemy);
+            this.checkThrowingObjCollisions(enemy);
         });
-
-
-
         this.collectBottleIfColliding();
+    }
 
-        //for each function, für collectBottle, ?wie bekommt man indexId in for each funciton
-        /*this.level.collectables.forEach(collectable => {
-            if (this.character.isColliding(collectable)) {
-                this.character.collected_coins.push(collectable);
-                this.level.collectables.splice(this.i, 1);
-                this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20)
-            }
-        })*/
+    checkCharCollisions(enemy) {
+        if (this.character.isColliding(enemy)) {
+            this.character.hit();
+        }
+    }
+
+    checkThrowingObjCollisions(enemy) {
+        if (this.throwableObjects.length > 0) {
+            this.throwableObjects.forEach(obj => {
+                if (obj.isColliding(enemy)) {
+                    obj.colliding = true;
+                    enemy.hit();
+                    console.log(enemy.health);
+                }
+            })
+        }
     }
 
     collectBottleIfColliding() {

@@ -15,7 +15,7 @@ class MovableObject extends DrawableObject {
                     this.y -= this.offsetY;
                     this.offsetY -= this.acceleration;
                 } else {
-                    this.offsetY = -1;
+                    this.offsetY = -10;
                     //this.acceleration = 0;
                     //clearInterval(interval);
                 }
@@ -49,7 +49,6 @@ class MovableObject extends DrawableObject {
             this.img = this.imageCache[path];
             this.currentImage++;
         }
-
     }
 
     moveRight() {

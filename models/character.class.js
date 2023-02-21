@@ -104,6 +104,7 @@ class Character extends MovableObject {
          * check for Keyboard input(RIGHT,LEFT,SPACE)
          */
         setInterval(() => {
+
             this.walking_sound.pause();
             if (this.world.keyboard.RIGHT && this.X < this.world.level.level_end_x) {
                 this.moveRight();
@@ -130,18 +131,19 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else {
                 if (this.isHurt()) {
+                    this.speed = 5;
                     this.world.statusbarHealth.setPercentage(this.health);
                     this.playAnimation(this.IMAGES_HURT);
                 } else {
                     if (!this.isAboveGround()) {
                         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-
+                            this.speed = 10;
                             this.playAnimation(this.IMAGES_WALKING);
                         }
                     }
                 }
             }
-        }, 1000 / 50)
+        }, 1000 / 40)
 
         setInterval(() => {
             if (this.isAboveGround()) {
