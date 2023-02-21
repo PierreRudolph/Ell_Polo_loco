@@ -34,7 +34,7 @@ class Chicken extends MovableObject {
         }, 250)
 
         setInterval(() => {
-            this.moveLeft();
+            //this.moveLeft();
         }, 1000 / 60);
     }
 }

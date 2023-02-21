@@ -19,6 +19,7 @@ class World {
         this.setWorld();
         this.draw();
         this.run();
+
     }
 
     setWorld() {
@@ -38,8 +39,8 @@ class World {
         //---Space for fixed Objects---//
         this.addToMap(this.statusbarHealth);
         this.addToMap(this.statusbarCoin);
+
         this.addToMap(this.statusbarBottle);
-        //this.addToMap(this.throwableObjects);
         this.ctx.translate(this.camera_x, 0);
 
         this.addObjectsToMap(this.throwableObjects);
@@ -66,9 +67,33 @@ class World {
             this.flipImage(model);
         }
         model.draw(this.ctx);
-        model.drawHitbox(this.ctx);
+        //model.drawHitbox(this.ctx);
         if (model.otherDirection) {
             this.flipImageBack(model);
+        }
+    }
+
+    //draws
+    drawCoinPyramid() {
+        let X = 250;
+        let y = 290;
+        for (let i = 0; i < 2; i++) {
+            const coin = this.level.collectables[i];
+            coin.X = X;
+            coin.y = y;
+            X += 80;
+            y -= 40;
+        }
+        this.level.collectables[2].X = X;
+        this.level.collectables[2].y = y;
+        X += 80;
+        y += 40;
+        for (let i = 3; i < 5; i++) {
+            const coin = this.level.collectables[i];
+            coin.X = X;
+            coin.y = y;
+            X += 80;
+            y += 40;
         }
     }
 
@@ -88,14 +113,25 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowObjects();
-        }, 500);
+        }, 225);
+        this.drawCoinPyramid();
     }
 
     checkThrowObjects() {
-        if (this.keyboard.D) {
-            let bottle = new ThrowableObject(this.character.X + 100, this.character.y + 100);
+        if (this.keyboard.D /*&& this.character.collected_bottles.length > 0*/) {
+            let positionX;
+            if (this.character.otherDirection) {
+                positionX = this.character.X;
+            } else {
+                positionX = this.character.X + 60;
+            }
+            let bottle = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
             this.throwableObjects.push(bottle);
             this.checkCollisions(bottle);
+
+
+            this.character.collected_bottles.splice(0, 1);
+            this.statusbarBottle.setPercentage(this.statusbarBottle.percentage -= 20);
         }
     }
 
@@ -103,21 +139,47 @@ class World {
         this.level.enemies.forEach(enemy => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
-                console.log(this.character.health);
             }
             if (bottle) {
                 if (bottle.isColliding(enemy)) {
-                    enemy.health -= 100;
+                    //this.throwableObjects.splice(0, 1);
+                    //enemy.hit();
+                    //bottle.playAnimation();
+                    bottle.colliding = true;
                 }
             }
         });
 
-        this.level.collectables.forEach(collectable => {
+        this.collectBottleIfColliding();
+
+        //for each function, für collectBottle, ?wie bekommt man indexId in for each funciton
+        /*this.level.collectables.forEach(collectable => {
             if (this.character.isColliding(collectable)) {
                 this.character.collected_coins.push(collectable);
-                this.level.collectables.splice(0, 1);
+                this.level.collectables.splice(this.i, 1);
                 this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20)
             }
-        })
+        })*/
+    }
+
+    collectBottleIfColliding() {
+        for (let i = 0; i < this.level.collectables.length; i++) {
+            const collectable = this.level.collectables[i];
+            if (this.character.isColliding(collectable)) {
+                this.pushCollectable(collectable);
+                this.level.collectables.splice(i, 1);
+            }
+        }
+    }
+
+    pushCollectable(collectable) {
+        if (collectable.name == 'Coin') {
+            this.character.collected_coins.push(collectable);
+            this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20);
+        }
+        if (collectable.name == 'Bottle') {
+            this.character.collected_bottles.push(collectable);
+            this.statusbarBottle.setPercentage(this.statusbarBottle.percentage += 20);
+        }
     }
 }

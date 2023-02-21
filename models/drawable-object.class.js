@@ -29,13 +29,13 @@ class DrawableObject {
         });
     }
 
-    drawHitbox(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Coin) {
+    /*drawHitbox(ctx) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Coin || this instanceof Bottle) {
             ctx.beginPath();
             ctx.lineWidth = "5";
             ctx.strokeStyle = "blue";
             ctx.rect(this.X, this.y, this.width, this.height);
             ctx.stroke();
         }
-    }
+    }*/
 }

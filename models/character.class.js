@@ -100,6 +100,9 @@ class Character extends MovableObject {
 
     animate() {
 
+        /**
+         * check for Keyboard input(RIGHT,LEFT,SPACE)
+         */
         setInterval(() => {
             this.walking_sound.pause();
             if (this.world.keyboard.RIGHT && this.X < this.world.level.level_end_x) {
@@ -119,6 +122,9 @@ class Character extends MovableObject {
             this.world.camera_x = -this.X + 100;
         }, 1000 / 60);
 
+        /**
+         * action for character status change(if isHurt,if isDead, if isAboveGround)
+         */
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
@@ -129,7 +135,7 @@ class Character extends MovableObject {
                 } else {
                     if (!this.isAboveGround()) {
                         if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                            //Walking animation
+
                             this.playAnimation(this.IMAGES_WALKING);
                         }
                     }
@@ -164,7 +170,7 @@ class Character extends MovableObject {
             this.currentPlaying = new Audio(this.jump_sounds[this.i]);
             this.currentPlaying.play();
             this.i++;
-            if (this.i >= 3) {
+            if (this.i >= this.jump_sounds.length) {
                 this.i = 0;
             }
         }, 100)
