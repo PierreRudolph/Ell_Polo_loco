@@ -8,11 +8,18 @@ class MovableObject extends DrawableObject {
     lastHit = 0;
 
 
-    applyGravity() {
+    applyGravity(objCollided) {
         setInterval(() => {
             if (this.isAboveGround() || this.offsetY > 0) {
-                this.y -= this.offsetY;
-                this.offsetY -= this.acceleration;
+                if (!objCollided) {
+                    this.y -= this.offsetY;
+                    this.offsetY -= this.acceleration;
+                } else {
+                    this.offsetY = -1;
+                    //this.acceleration = 0;
+                    //clearInterval(interval);
+                }
+
             }
         }, 1000 / 25);
     }
@@ -34,6 +41,15 @@ class MovableObject extends DrawableObject {
         let path = images[i];
         this.img = this.imageCache[path];
         this.currentImage++;
+    }
+
+    playAnimationOnce(images) {
+        for (let i = 0; i < images.length; i++) {
+            const path = images[i];
+            this.img = this.imageCache[path];
+            this.currentImage++;
+        }
+
     }
 
     moveRight() {

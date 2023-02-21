@@ -6,6 +6,7 @@ class World {
     throwableObjects = [];
     level = level1;
     BackgroundObjects = level1.BackgroundObjects;
+    currentThrowingObject;
 
     ctx;
     canvas;
@@ -125,30 +126,39 @@ class World {
             } else {
                 positionX = this.character.X + 60;
             }
-            let bottle = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
-            this.throwableObjects.push(bottle);
-            this.checkCollisions(bottle);
-
+            this.currentThrowingObject = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
+            this.throwableObjects.push(this.currentThrowingObject);
 
             this.character.collected_bottles.splice(0, 1);
             this.statusbarBottle.setPercentage(this.statusbarBottle.percentage -= 20);
         }
     }
 
-    checkCollisions(bottle) {
+    checkCollisions() {
         this.level.enemies.forEach(enemy => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
             }
-            if (bottle) {
-                if (bottle.isColliding(enemy)) {
+
+            if (this.throwableObjects.length > 0) {
+                this.throwableObjects.forEach(obj => {
+                    if (obj.isColliding(enemy)) {
+                        obj.colliding = true;
+                    }
+                })
+            }
+
+            /*if (this.throwableObjects.length > 0) {
+                if (this.throwableObjects.isColliding(enemy)) {
                     //this.throwableObjects.splice(0, 1);
                     //enemy.hit();
                     //bottle.playAnimation();
-                    bottle.colliding = true;
+                    console.log('bottle is coliding enemy');
                 }
-            }
+            }*/
         });
+
+
 
         this.collectBottleIfColliding();
 
