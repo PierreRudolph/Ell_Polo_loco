@@ -45,9 +45,11 @@ class MovableObject extends DrawableObject {
 
     playAnimationOnce(images) {
         for (let i = 0; i < images.length; i++) {
-            const path = images[i];
-            this.img = this.imageCache[path];
-            this.currentImage++;
+            setTimeout(() => {
+                const path = images[i];
+                this.img = this.imageCache[path];
+                this.currentImage++;
+            }, 1000);
         }
     }
 

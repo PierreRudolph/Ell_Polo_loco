@@ -84,3 +84,15 @@ function resetTimeout() {
     clearTimeout(timeout);
     setLongIdleTimeout();
 }
+
+function playBossBgMusic() {
+    let music = document.getElementById('boss-bg-sound');
+
+    if (music.paused == true) {
+        music.currentTime = 40;
+        music.volume = 1;
+        music.load();
+        music.play();
+        music.loop = true;
+    }
+}

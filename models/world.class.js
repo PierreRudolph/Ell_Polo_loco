@@ -114,6 +114,7 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowObjects();
+            this.checkIfObjectOutOfWorld();
         }, 225);
         this.drawCoinPyramid();
     }
@@ -144,7 +145,7 @@ class World {
 
     checkCharCollisions(enemy) {
         if (this.character.isColliding(enemy)) {
-            this.character.hit();
+            //this.character.hit();
         }
     }
 
@@ -154,16 +155,27 @@ class World {
                 if (obj.isColliding(enemy)) {
                     obj.colliding = true;
                     enemy.hit();
-                    console.log(enemy.health);
                 }
             })
+        }
+    }
+
+    checkIfObjectOutOfWorld() {
+        if (this.throwableObjects.length > 0) {
+            for (let i = 0; i < this.throwableObjects.length; i++) {
+                const object = this.throwableObjects[i];
+                if (object.y > 350) {
+                    this.throwableObjects.splice(i, 1);
+                }
+
+            }
         }
     }
 
     collectBottleIfColliding() {
         for (let i = 0; i < this.level.collectables.length; i++) {
             const collectable = this.level.collectables[i];
-            if (this.character.isColliding(collectable)) {
+            if (this.character.isColliding(collectable) && this.character.collected_bottles.length <= 4) {
                 this.pushCollectable(collectable);
                 this.level.collectables.splice(i, 1);
             }

@@ -2,6 +2,8 @@ class Endboss extends MovableObject {
     width = 200;
     height = 350;
     y = 130;
+    alert = false;
+    chicken_hit_sound = new Audio('audio/boss_chicken_hit.mp3');
 
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -57,16 +59,26 @@ class Endboss extends MovableObject {
 
     animate() {
         setInterval(() => {
-            if (!this.isDead() && !this.isHurt()) {
+            if (!this.isDead() && !this.isHurt() && !this.alert) {
                 this.playAnimation(this.IMAGES_WALKING)
             } else if (this.isDead()) {
                 this.playAnimationOnce(this.IMAGES_DEAD);
+            } else if (this.isHurt()) {
+                if (!this.alert) {
+                    this.alert = true;
+                }
+                this.playAnimation(this.IMAGES_HURT);
+            } else if (this.alert) {
+                this.playAnimation(this.IMAGES_ALERT);
+                playBossBgMusic();
             }
         }, 250)
 
         setInterval(() => {
-            if (!this.isDead() && !this.isHurt()) {
-                //this.moveLeft();
+            if (!this.isDead() && !this.isHurt() && this.X > 2000) {
+                this.moveLeft();
+            } else {
+
             }
         }, 1000 / 60);
     }
