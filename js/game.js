@@ -85,14 +85,18 @@ function resetTimeout() {
     setLongIdleTimeout();
 }
 
-function playBossBgMusic() {
-    let music = document.getElementById('boss-bg-sound');
+function playBgMusic(audioId) {
+    let music = document.getElementById(`${audioId}`);
 
     if (music.paused == true) {
-        music.currentTime = 40;
-        music.volume = 1;
+        music.volume = 0.8;
         music.load();
         music.play();
         music.loop = true;
     }
+}
+
+function stopBgMusic(audioId) {
+    let music = document.getElementById(`${audioId}`);
+    music.pause();
 }

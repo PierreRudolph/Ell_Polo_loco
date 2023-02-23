@@ -29,7 +29,8 @@ class Chicken extends MovableObject {
         setInterval(() => {
             if (!this.isDead() && !this.isHurt()) {
                 this.playAnimation(this.IMAGES_WALKING)
-                this.chicken_sound.play();
+                this.playChickenSoundDisplaced();
+
             } else if (this.isDead()) {
                 this.chicken_sound.pause();
                 this.loadImage(this.IMAGE_DEAD);
@@ -53,5 +54,9 @@ class Chicken extends MovableObject {
                 this.otherDirection = false;
             }
         }, 1000 / 60);
+    }
+    playChickenSoundDisplaced() {
+        this.chicken_sound.start = 0.01 + Math.random() * 0.07;
+        this.chicken_sound.play();
     }
 }

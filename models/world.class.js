@@ -112,6 +112,7 @@ class World {
 
     run() {
         setInterval(() => {
+            this.playGameBgSoundIfUserAction();
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkIfObjectOutOfWorld();
@@ -190,6 +191,12 @@ class World {
         if (collectable.name == 'Bottle') {
             this.character.collected_bottles.push(collectable);
             this.statusbarBottle.setPercentage(this.statusbarBottle.percentage += 20);
+        }
+    }
+
+    playGameBgSoundIfUserAction() {
+        if (this.keyboard.RIGHT) {
+            playBgMusic('game-bg-sound');
         }
     }
 }
