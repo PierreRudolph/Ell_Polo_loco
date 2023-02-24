@@ -2,7 +2,12 @@ class SmallChicken extends MovableObject {
     height = 50;
     width = 40;
     y = 380;
-
+    offset = {
+        right: -20,
+        left: -10,
+        top: -20,
+        bottom: -20
+    }
     chicken_sound = new Audio('audio/chicken_small.mp3');
     chicken_hit_sound = new Audio('audio/small_chicken_hit.mp3');
 

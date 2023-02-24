@@ -2,7 +2,7 @@ class Character extends MovableObject {
     height = 220;
     width = 105;
     y = 200;
-    speed = 10;
+    speed = 5;
     renderLongIdleImages = false;
     world;
     walking_sound = new Audio('audio/walking_fast_char.mp3');
@@ -10,6 +10,12 @@ class Character extends MovableObject {
     collected_coins = [];
     currentPlaying;
     i = 0;
+    offset = {
+        right: 40,
+        left: 20,
+        top: 80,
+        bottom: 90
+    }
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',

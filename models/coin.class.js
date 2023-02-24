@@ -1,8 +1,13 @@
 class Coin extends MovableObject {
     name = 'Coin';
-    height = 150;
+    height = 120;
     y = 290;
-
+    offset = {
+        right: 40,
+        left: 20,
+        top: 30,
+        bottom: 60
+    }
     IMAGES = [
         'img/8_coin/coin_1.png',
         'img/8_coin/coin_2.png'

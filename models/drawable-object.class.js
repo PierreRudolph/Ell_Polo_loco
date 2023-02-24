@@ -6,7 +6,12 @@ class DrawableObject {
     y = 280;
     height = 150;
     width = 100;
-
+    offset = {
+        right: 0,
+        left: 0,
+        top: 0,
+        bottom: 0
+    }
 
     //loadiMage('img/test.png);
     loadImage(path) {
@@ -36,7 +41,7 @@ class DrawableObject {
             ctx.beginPath();
             ctx.lineWidth = "3";
             ctx.strokeStyle = "blue";
-            ctx.rect(this.X, this.y, this.width, this.height);
+            ctx.rect(this.X + this.offset.left, this.y + this.offset.top, this.width - this.offset.right, this.height - this.offset.bottom);
             ctx.stroke();
         }
     }
