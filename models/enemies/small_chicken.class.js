@@ -36,7 +36,7 @@ class SmallChicken extends MovableObject {
             if (this.isHurt()) {
                 this.chicken_hit_sound.play();
             }
-        }, 200)
+        }, 250)
 
         setInterval(() => {
             if (!this.isDead() && !this.isHurt() && !this.otherDirection) {

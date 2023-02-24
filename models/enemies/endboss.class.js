@@ -1,7 +1,8 @@
 class Endboss extends MovableObject {
-    width = 200;
-    height = 350;
-    y = 130;
+    width = 400;
+    height = 450;
+    y = 20;
+    offsetY = 0;
     alert = false;
     chicken_hit_sound = new Audio('audio/boss_chicken_hit.mp3');
     chicken_alert_sound = new Audio('audio/boss_chicken_alert.mp3');
@@ -54,40 +55,79 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
-        this.X = 2600;
+        this.X = 400;
         this.animate();
+        this.applyGravity();
     }
 
     animate() {
+        let imageIndex = 0;
         setInterval(() => {
             if (!this.isDead() && !this.isHurt() && !this.alert) {
                 this.playAnimation(this.IMAGES_WALKING)
-            } else if (this.isDead()) {
-                this.playAnimationOnce(this.IMAGES_DEAD);
-                stopBgMusic('boss-bg-sound');
-            } else if (this.isHurt()) {
-                if (!this.alert) {
-                    this.alert = true;
-                }
-                this.playAnimation(this.IMAGES_HURT);
-            } else if (this.alert) {
-                this.playAnimation(this.IMAGES_ALERT);
-                playBgMusic('boss-bg-sound');
-                if (this.chicken_alert_sound.paused) {
-                    this.chicken_alert_sound.play();
-                }
+            } else {
+                imageIndex = this.ifAlert(imageIndex);
             }
+            this.ifAlertAnimationDone(imageIndex);
+            this.IfIsHurt();
+            this.ifIsDead();
         }, 250)
 
-
-
         setInterval(() => {
-            if (!this.isDead() && !this.isHurt() && this.X > 2000) {
+            if (!this.isDead() && !this.alert && this.X > 2000) {
+                this.otherDirection = false;
                 this.moveLeft();
-            } else {
-
+            } else if (this.X > 2600 && !this.isDead() && !this.alert) {
+                this.otherDirection = true;
+                this.moveRight();
             }
         }, 1000 / 60);
     }
 
+    ifAlert(imageIndex) {
+        if (this.alert && imageIndex <= 10) {
+            this.playAnimation(this.IMAGES_ALERT);
+            stopBgMusic('game-bg-sound');
+            playBgMusic('boss-bg-sound');
+            imageIndex++;
+            return imageIndex;
+        }
+        return imageIndex;
+    }
+
+    ifAlertAnimationDone(imageIndex) {
+        if (imageIndex > 10) {
+            this.alert = false;
+            this.playAnimation(this.IMAGES_ATTACK);
+        }
+    }
+
+    ifIsDead() {
+        if (this.isDead()) {
+            this.playAnimationOnce(this.IMAGES_DEAD);
+            stopBgMusic('boss-bg-sound');
+        }
+    }
+
+    IfIsHurt() {
+        if (this.isHurt()) {
+            if (!this.alert) {
+                this.alert = true;
+                this.playIsHurtSound();
+            }
+            this.playAnimation(this.IMAGES_HURT);
+        }
+    }
+
+    playFullAnimation() {
+        let i = 0;
+
+    }
+
+    playIsHurtSound() {
+        this.chicken_alert_sound.play();
+    }
+    playAlertSound() {
+        this.chicken_alert_sound.play();
+    }
 }

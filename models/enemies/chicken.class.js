@@ -25,7 +25,7 @@ class Chicken extends MovableObject {
 
     animate() {
         this.chicken_sound.volume = 0.1;
-        this.chicken_hit_sound.volume = 0.1;
+        this.chicken_hit_sound.volume = 0.6;
         setInterval(() => {
             if (!this.isDead() && !this.isHurt()) {
                 this.playAnimation(this.IMAGES_WALKING)

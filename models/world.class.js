@@ -44,9 +44,9 @@ class World {
         this.addToMap(this.statusbarBottle);
         this.ctx.translate(this.camera_x, 0);
 
-        this.addObjectsToMap(this.throwableObjects);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
+        this.addObjectsToMap(this.throwableObjects);
 
         this.ctx.translate(-this.camera_x, 0);
 
@@ -68,7 +68,7 @@ class World {
             this.flipImage(model);
         }
         model.draw(this.ctx);
-        //model.drawHitbox(this.ctx);
+        model.drawHitbox(this.ctx);
         if (model.otherDirection) {
             this.flipImageBack(model);
         }
@@ -145,7 +145,7 @@ class World {
     }
 
     checkCharCollisions(enemy) {
-        if (this.character.isColliding(enemy)) {
+        if (enemy.isColliding(this.character)) {
             //this.character.hit();
         }
     }
@@ -165,10 +165,12 @@ class World {
         if (this.throwableObjects.length > 0) {
             for (let i = 0; i < this.throwableObjects.length; i++) {
                 const object = this.throwableObjects[i];
+                if (object.colliding) {
+                    setTimeout(() => { this.throwableObjects.splice(i, 1); }, 300);
+                }
                 if (object.y > 350) {
                     this.throwableObjects.splice(i, 1);
                 }
-
             }
         }
     }
@@ -196,7 +198,7 @@ class World {
 
     playGameBgSoundIfUserAction() {
         if (this.keyboard.RIGHT) {
-            playBgMusic('game-bg-sound');
+            //playBgMusic('game-bg-sound');
         }
     }
 }

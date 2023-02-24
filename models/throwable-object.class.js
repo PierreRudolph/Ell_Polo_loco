@@ -40,9 +40,8 @@ class ThrowableObject extends MovableObject {
             }
             if (this.colliding) {
                 this.applyGravity(this.colliding);
-                this.playAnimationOnce(this.IMAGES_SPLASH);
+                this.playAnimation(this.IMAGES_SPLASH);
             }
-
         }, 25);
     }
 
