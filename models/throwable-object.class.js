@@ -1,5 +1,5 @@
 class ThrowableObject extends MovableObject {
-    speed = 10;
+    speed = 15;
     colliding = false;
     IMAGES_ROTATION = [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -30,15 +30,13 @@ class ThrowableObject extends MovableObject {
 
 
     throw(otherDirection) {
-        this.offsetY = 10;
         this.applyGravity();
 
         setInterval(() => {
-            if (this.isAboveGround() && !this.colliding) {
+            if (!this.colliding) {
                 this.playAnimation(this.IMAGES_ROTATION);
                 this.setObjectThrowingDirection(otherDirection);
-            }
-            if (this.colliding) {
+            } else {
                 this.applyGravity(this.colliding);
                 this.playAnimation(this.IMAGES_SPLASH);
             }
@@ -51,16 +49,5 @@ class ThrowableObject extends MovableObject {
         } else {
             this.X += this.speed;
         }
-    }
-
-    throwOtherDirection() {
-        this.offsetY = 30;
-        this.applyGravity();
-        setInterval(() => {
-            if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_ROTATION);
-                this.X += 10;
-            }
-        }, 25);
     }
 }

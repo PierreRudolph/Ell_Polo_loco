@@ -11,14 +11,14 @@ class MovableObject extends DrawableObject {
     applyGravity(objCollided) {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
-                if (!objCollided) {
+                if (!objCollided) { //objCollided, damit throwableObject nicht mehr fällt, falls es mit einem gegner Kollidiert.
                     this.y -= this.speedY;
                     this.speedY -= this.acceleration;
                 } else {
                     this.speedY = 0;
                 }
             }
-        }, 1000 / 25);
+        }, 1000 / 30);
     }
 
 
@@ -33,20 +33,16 @@ class MovableObject extends DrawableObject {
     }
 
     playAnimation(images) {
-        let i = this.currentImage % images.length;
-        // let i = 0 % 6; => 1, Rest 1
-        // let i = 0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0
+        let i = this.currentImage % images.length;//iteriert durch Array,(% ist eine undendliche schleife)
         let path = images[i];
         this.playImgAudioSyncEndbossScream(images, i);
         this.jumpOnJumpImg(images, i);
-
         this.img = this.imageCache[path];
         this.currentImage++;
     }
 
     playAnimationOnce(images) {
         for (let i = 0; i < images.length; i++) {
-
             const path = images[i];
             this.img = this.imageCache[path];
             this.currentImage++;
@@ -57,7 +53,6 @@ class MovableObject extends DrawableObject {
         if (images == this.IMAGES_ATTACK && i == 4) {
             this.jump();
             //this.moveLeft();
-
         }
     }
 
@@ -67,25 +62,26 @@ class MovableObject extends DrawableObject {
         }
     }
 
+
     moveRight() {
         this.X += this.speed;
     }
+
 
     moveLeft() {
         this.X -= this.speed;
     }
 
+
     jump() {
         this.speedY = 25;
     }
+
 
     throw() {
         this.X += this.speed;
     }
 
-    setCoinBar() {
-        this.status
-    }
 
     hit() {
         this.health -= 20;
@@ -97,6 +93,7 @@ class MovableObject extends DrawableObject {
         }
     }
 
+
     kill() {
         this.health = 0;
         if (this.health < 0) {
@@ -106,16 +103,19 @@ class MovableObject extends DrawableObject {
         }
     }
 
+
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;//Difference in ms
         timepassed = timepassed / 1000; //ms geteilt durch Tausend, ergibt s.
         return timepassed < 0.5;
     }
 
+
     isDead() {
         return this.health == 0;
 
     }
+
 
     // Bessere Formel zur Kollisionsberechnung (Genauer)
     /*isColliding(obj) {
@@ -147,10 +147,4 @@ class MovableObject extends DrawableObject {
     // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt.
     //Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
 
-    isCollidingHead(obj) {
-        if (!obj.health <= 0) {
-            return (this.y + this.height - this.offset.bottom) > obj.y + obj.offset.top &&
-                this.X + this.offset.left < (obj.X + obj.width - obj.offset.right)
-        }
-    }
 }

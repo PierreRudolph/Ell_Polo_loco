@@ -165,7 +165,7 @@ class Character extends MovableObject {
             } else {
                 this.playAnimation(this.IMAGES_IDLE);
             }
-        }, 1000 / 4)
+        }, 225)
     }
 
     playCharWalkingSound() {

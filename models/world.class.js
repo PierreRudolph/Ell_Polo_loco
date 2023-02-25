@@ -20,12 +20,13 @@ class World {
         this.setWorld();
         this.draw();
         this.run();
-
     }
+
 
     setWorld() {
         this.character.world = this;
     }
+
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -57,11 +58,13 @@ class World {
         });
     }
 
+
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         })
     }
+
 
     addToMap(model) {
         if (model.otherDirection) {
@@ -74,7 +77,7 @@ class World {
         }
     }
 
-    //draws
+
     drawCoinPyramid() {
         let X = 250;
         let y = 290;
@@ -98,6 +101,7 @@ class World {
         }
     }
 
+
     flipImage(model) {
         this.ctx.save();
         this.ctx.translate(model.width, 0);
@@ -105,33 +109,42 @@ class World {
         model.X = model.X * -1;
     }
 
+
     flipImageBack(model) {
         model.X = model.X * -1;
         this.ctx.restore();
     }
 
+
     run() {
         setInterval(() => {
             this.playGameBgSoundIfUserAction();
-            ;
             this.checkThrowObjects();
-            this.checkIfObjectOutOfWorld();
+
         }, 225);
         this.drawCoinPyramid();
-        setInterval(() => { this.checkCollisions() }, 1000 / 60);
+        setInterval(() => {
+            this.checkCollisions();
+            this.checkIfObjectOutOfWorld();
+        }, 1000 / 60);
     }
+
 
     checkThrowObjects() {
         if (this.keyboard.D /*&& this.character.collected_bottles.length > 0*/) {
             let positionX = this.checkThrowDirection();
-
-            this.currentThrowingObject = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
-            this.throwableObjects.push(this.currentThrowingObject);
-
+            this.generateNewThrowingObject(positionX);
             this.character.collected_bottles.splice(0, 1);
             this.statusbarBottle.setPercentage(this.statusbarBottle.percentage -= 20);
         }
     }
+
+
+    generateNewThrowingObject(positionX) {
+        this.currentThrowingObject = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
+        this.throwableObjects.push(this.currentThrowingObject);
+    }
+
 
     checkThrowDirection(positionX) {
         if (this.character.otherDirection) {
@@ -142,6 +155,7 @@ class World {
         return positionX;
     }
 
+
     checkCollisions() {
         this.level.enemies.forEach(enemy => {
             this.checkCharCollisions(enemy);
@@ -149,6 +163,7 @@ class World {
         });
         this.collectBottleIfColliding();
     }
+
 
     checkCharCollisions(enemy) {
         if (this.character.isColliding(enemy)) {
@@ -161,6 +176,7 @@ class World {
         }
     }
 
+
     checkThrowingObjCollisions(enemy) {
         if (this.throwableObjects.length > 0) {
             this.throwableObjects.forEach(obj => {
@@ -172,6 +188,7 @@ class World {
         }
     }
 
+
     checkIfObjectOutOfWorld() {
         if (this.throwableObjects.length > 0) {
             for (let i = 0; i < this.throwableObjects.length; i++) {
@@ -179,12 +196,13 @@ class World {
                 if (object.colliding) {
                     setTimeout(() => { this.throwableObjects.splice(i, 1); }, 300);
                 }
-                if (object.y > 350) {
+                if (object.y > 430) {
                     this.throwableObjects.splice(i, 1);
                 }
             }
         }
     }
+
 
     collectBottleIfColliding() {
         for (let i = 0; i < this.level.collectables.length; i++) {
@@ -196,6 +214,7 @@ class World {
         }
     }
 
+
     pushCollectable(collectable) {
         if (collectable.name == 'Coin') {
             this.character.collected_coins.push(collectable);
@@ -206,6 +225,7 @@ class World {
             this.statusbarBottle.setPercentage(this.statusbarBottle.percentage += 20);
         }
     }
+
 
     playGameBgSoundIfUserAction() {
         if (this.keyboard.RIGHT) {
