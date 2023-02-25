@@ -14,7 +14,7 @@ class Character extends MovableObject {
         right: 40,
         left: 20,
         top: 80,
-        bottom: 90
+        bottom: 0
     }
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',

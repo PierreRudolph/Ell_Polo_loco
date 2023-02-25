@@ -2,7 +2,7 @@ class Endboss extends MovableObject {
     width = 400;
     height = 450;
     y = 20;
-    offsetY = 0;
+    speedY = 0;
     alert = false;
     chicken_hit_sound = new Audio('audio/boss_chicken_hit.mp3');
     chicken_alert_sound = new Audio('audio/boss_chicken_alert.mp3');
@@ -66,7 +66,7 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
-        this.X = 400;
+        this.X = 2600;
         this.animate();
         this.applyGravity();
     }

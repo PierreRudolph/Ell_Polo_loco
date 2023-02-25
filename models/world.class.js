@@ -113,27 +113,33 @@ class World {
     run() {
         setInterval(() => {
             this.playGameBgSoundIfUserAction();
-            this.checkCollisions();
+            ;
             this.checkThrowObjects();
             this.checkIfObjectOutOfWorld();
         }, 225);
         this.drawCoinPyramid();
+        setInterval(() => { this.checkCollisions() }, 1000 / 60);
     }
 
     checkThrowObjects() {
         if (this.keyboard.D /*&& this.character.collected_bottles.length > 0*/) {
-            let positionX;
-            if (this.character.otherDirection) {
-                positionX = this.character.X;
-            } else {
-                positionX = this.character.X + 60;
-            }
+            let positionX = this.checkThrowDirection();
+
             this.currentThrowingObject = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
             this.throwableObjects.push(this.currentThrowingObject);
 
             this.character.collected_bottles.splice(0, 1);
             this.statusbarBottle.setPercentage(this.statusbarBottle.percentage -= 20);
         }
+    }
+
+    checkThrowDirection(positionX) {
+        if (this.character.otherDirection) {
+            positionX = this.character.X;
+        } else {
+            positionX = this.character.X + 60;
+        }
+        return positionX;
     }
 
     checkCollisions() {
@@ -145,8 +151,13 @@ class World {
     }
 
     checkCharCollisions(enemy) {
-        if (enemy.isColliding(this.character)) {
-            //this.character.hit();
+        if (this.character.isColliding(enemy)) {
+            if (this.character.isAboveGround() && enemy instanceof Chicken || enemy instanceof SmallChicken) {
+                enemy.kill();
+                this.character.jump();
+            } else {
+                this.character.hit();
+            }
         }
     }
 

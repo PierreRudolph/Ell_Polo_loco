@@ -2,25 +2,20 @@ class MovableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     gainSpeedY = 20;
-    offsetY = -8;
+    speedY = 0;
     acceleration = 2.5;
     health = 100;
     lastHit = 0;
-    offset = {
-        right: 0,
-        left: 0,
-        top: 0,
-        bottom: 0
-    }
+
 
     applyGravity(objCollided) {
         setInterval(() => {
-            if (this.isAboveGround() || this.offsetY > 0) {
+            if (this.isAboveGround() || this.speedY > 0) {
                 if (!objCollided) {
-                    this.y -= this.offsetY;
-                    this.offsetY -= this.acceleration;
+                    this.y -= this.speedY;
+                    this.speedY -= this.acceleration;
                 } else {
-                    this.offsetY = 0;
+                    this.speedY = 0;
                 }
             }
         }, 1000 / 25);
@@ -81,7 +76,7 @@ class MovableObject extends DrawableObject {
     }
 
     jump() {
-        this.offsetY = 25;
+        this.speedY = 25;
     }
 
     throw() {
@@ -102,6 +97,15 @@ class MovableObject extends DrawableObject {
         }
     }
 
+    kill() {
+        this.health = 0;
+        if (this.health < 0) {
+            this.health = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+    }
+
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;//Difference in ms
         timepassed = timepassed / 1000; //ms geteilt durch Tausend, ergibt s.
@@ -114,15 +118,39 @@ class MovableObject extends DrawableObject {
     }
 
     // Bessere Formel zur Kollisionsberechnung (Genauer)
-    isColliding(obj) {
+    /*isColliding(obj) {
         if (!obj.health <= 0) {
             return (this.X + this.width - this.offset.right) > obj.X + obj.offset.left &&
                 this.X + this.offset.left < (obj.X + obj.width - obj.offset.right) &&
                 (this.y + this.height - this.offset.bottom) > obj.y + obj.offset.top &&
-                (this.y + this.offset.top) < (obj.y + obj.height - obj.offset.bottom)
+                (this.y + this.offset.top) < (obj.y + obj.height - obj.offset.bottom);
+        }
+    }*/
+
+    isColliding(obj) {
+        if (!obj.health <= 0) {
+            return (this.X + this.width) - this.offset.right >= (obj.X + obj.offset.left) &&
+                (this.X + this.offset.left) <= (obj.X + obj.width) - obj.offset.right &&
+                (this.y + this.height) - this.offset.bottom >= (obj.y - obj.offset.top) &&
+                (this.y + this.offset.top) <= (obj.y + obj.height) - obj.offset.bottom;
         }
     }
+
+    /*isColliding(obj) {
+        return (this.X + this.width) >= obj.X &&
+            this.X <= (obj.X + obj.width) &&
+            (this.y + this.height) >= obj.y &&
+            (this.y) <= (obj.y + obj.height);
+    }*/
     //&&
     //obj.onCollisionCourse;
-}// Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt.
-        //Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
+    // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt.
+    //Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
+
+    isCollidingHead(obj) {
+        if (!obj.health <= 0) {
+            return (this.y + this.height - this.offset.bottom) > obj.y + obj.offset.top &&
+                this.X + this.offset.left < (obj.X + obj.width - obj.offset.right)
+        }
+    }
+}
