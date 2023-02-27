@@ -14,7 +14,7 @@ class Character extends MovableObject {
     currentPlayingHurtSound;
     jumpSoundPathId = 0;
     hurtSoundPathId = 0;
-
+    fullscreen = false;
     offset = {
         right: 40,
         left: 20,
@@ -135,11 +135,13 @@ class Character extends MovableObject {
 
         setInterval(() => {
             this.animationIfJumping();
-
+            this.ifKeyboardKeyB();
+            this.ifKeyboardEsc();
         }, 1000 / 12)
 
         setInterval(() => {
             this.animationLongIdleOrIdle();
+
         }, 225)
     }
 
@@ -168,6 +170,22 @@ class Character extends MovableObject {
         if (this.world.keyboard.SPACE && !this.isAboveGround()) {
             this.jump();
             this.playJumpSounds();
+        }
+    }
+
+
+    ifKeyboardKeyB() {
+        if (this.world.keyboard.B && this.fullscreen == false) {
+            this.fullscreen = true;
+            fullscreen();
+        }
+    }
+
+
+    ifKeyboardEsc() {
+        if (this.world.keyboard.N && this.fullscreen == true) {
+            this.fullscreen = false;
+            exitFullscreen();
         }
     }
 

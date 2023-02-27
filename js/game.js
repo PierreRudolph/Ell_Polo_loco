@@ -35,17 +35,17 @@ window.addEventListener('keydown', (event) => {
     if (event.code == 'ArrowLeft') {
         keyboard.LEFT = true;
     }
-    if (event.code == 'ArrowUp') {
-        keyboard.Up = true;
-    }
-    if (event.code == 'ArrowDown') {
-        keyboard.DOWN = true;
-    }
     if (event.code == 'Space') {
         keyboard.SPACE = true;
     }
     if (event.code == 'KeyD') {
         keyboard.D = true;
+    }
+    if (event.code == 'KeyB') {
+        keyboard.B = true;
+    }
+    if (event.code == 'KeyN') {
+        keyboard.N = true;
     }
 })
 
@@ -68,6 +68,12 @@ window.addEventListener('keyup', (event) => {
     }
     if (event.code == 'KeyD') {
         keyboard.D = false;
+    }
+    if (event.code == 'KeyB') {
+        keyboard.B = false;
+    }
+    if (event.code == 'KeyN') {
+        keyboard.N = false;
     }
 })
 
@@ -99,4 +105,28 @@ function playBgMusic(audioId) {
 function stopBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
     music.pause();
+}
+
+function fullscreen() {
+    let fullscreen = document.getElementById('fullscreen');
+    enterFullscreen(fullscreen);
+}
+
+function enterFullscreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.msRequestFullscreen) {//for IE 11
+        element.msRequestFullscreen();
+    } else if (element.webkitRequestFullscreen) {//ios Safari
+        element.webkitRequestFullscreen();
+    }
+}
+
+function exitFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    }
+
 }

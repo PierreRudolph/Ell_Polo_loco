@@ -17,6 +17,11 @@ h1 {
     text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.317);
 }
 
+.fullscreen-div {
+    display: flex;
+    justify-content: center;
+}
+
 canvas {
     display: block;
 }
