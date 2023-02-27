@@ -96,6 +96,8 @@ class Endboss extends MovableObject {
     }
 
 
+
+
     moveLeftOrRight() {
         if (!this.isDead() && !this.alert && this.X > 2000) {
             this.otherDirection = false;

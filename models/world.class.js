@@ -170,6 +170,7 @@ class World {
             if (this.character.isAboveGround() && enemy instanceof Chicken || enemy instanceof SmallChicken) {
                 enemy.kill();
                 this.character.jump();
+                this.character.playJumpSounds();
             } else {
                 this.character.hit();
             }

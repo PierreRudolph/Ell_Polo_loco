@@ -30,37 +30,62 @@ class SmallChicken extends MovableObject {
     animate() {
         this.chicken_sound.volume = 0.5;
         this.chicken_hit_sound.volume = 1;
+        this.playChickenSoundDisplaced();
         setInterval(() => {
-            if (!this.isDead() && !this.isHurt()) {
-                this.playAnimation(this.IMAGES_WALKING)
-                this.playChickenSoundDisplaced();
-            } else if (this.isDead()) {
-                this.chicken_sound.pause();
-                this.loadImage(this.IMAGE_DEAD);
-            }
-            if (this.isHurt()) {
-                this.chicken_hit_sound.play();
-            }
+            this.animationIfWalking();
+            this.actionsIfIsDead();
+            this.actionsIfIsHurt();
         }, 250)
 
         setInterval(() => {
-            if (!this.isDead() && !this.isHurt() && !this.otherDirection) {
-                this.moveLeft();
-            }
-            if (!this.isDead() && !this.isHurt() && this.otherDirection) {
-                this.moveRight();
-            }
-            if (this.X < 100) {
-                this.otherDirection = true;
-            }
-            if (this.X > 1000) {
-                this.otherDirection = false;
-            }
+            this.moveLeftOrRight();
+            this.checkThisXSetOtherDirection();
         }, 1000 / 60);
     }
 
+    animationIfWalking() {
+        if (!this.isDead() && !this.isHurt()) {
+            this.playAnimation(this.IMAGES_WALKING)
+        }
+    }
+
+    actionsIfIsDead() {
+        if (this.isDead()) {
+            this.chicken_sound.pause();
+            this.loadImage(this.IMAGE_DEAD);
+        }
+    }
+
+
+    actionsIfIsHurt() {
+        if (this.isHurt()) {
+            this.chicken_hit_sound.play();
+        }
+    }
+
+
+    moveLeftOrRight() {
+        if (!this.isDead() && !this.isHurt() && !this.otherDirection) {
+            this.moveLeft();
+        }
+        if (!this.isDead() && !this.isHurt() && this.otherDirection) {
+            this.moveRight();
+        }
+    }
+
+
+    checkThisXSetOtherDirection() {
+        if (this.X < 100) {
+            this.otherDirection = true;
+        }
+        if (this.X > 1000) {
+            this.otherDirection = false;
+        }
+    }
+
+
     playChickenSoundDisplaced() {
-        this.chicken_sound.start = 0.05 + Math.random() * 1.00;
+        this.chicken_sound.start = (0.01 + Math.random() * 0.09);
         this.chicken_sound.play();
     }
 }

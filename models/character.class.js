@@ -2,6 +2,7 @@ class Character extends MovableObject {
     height = 220;
     width = 105;
     y = 200;
+    X = 200;
     speed = 5;
     renderLongIdleImages = false;
     world;
@@ -9,13 +10,15 @@ class Character extends MovableObject {
     collected_bottles = [];
     collected_coins = [];
     currentPlaying;
-    i = 0;
+    jumpSoundPathId = 0;
+
     offset = {
         right: 40,
         left: 20,
         top: 80,
         bottom: 0
     }
+
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',
@@ -91,6 +94,7 @@ class Character extends MovableObject {
         'audio/char_jump/jump_9.mp3',
         'audio/char_jump/jump_10.mp3'
     ];
+
     constructor() {
         super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -104,77 +108,110 @@ class Character extends MovableObject {
     }
 
     animate() {
-
-        /**
-         * check for Keyboard input(RIGHT,LEFT,SPACE)
-         */
         setInterval(() => {
-
             this.walking_sound.pause();
-            if (this.world.keyboard.RIGHT && this.X < this.world.level.level_end_x) {
-                this.moveRight();
-                this.otherDirection = false;
-                this.playCharWalkingSound();
-            }
-            if (this.world.keyboard.LEFT && this.X > 0) {
-                this.moveLeft();
-                this.otherDirection = true;
-                this.playCharWalkingSound();
-            }
-            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.jump();
-                setTimeout(() => {
-                    this.playCharJumpSounds();
-                }, 50);
+            this.ifKeyboardRight();
+            this.ifKeyboardLeft();
+            this.ifKeyboardSpace();
 
-            }
-            this.world.camera_x = -this.X + 100;
         }, 1000 / 60);
 
-        /**
-         * action for character status change(if isHurt,if isDead, if isAboveGround)
-         */
-        setInterval(() => {
-            if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-            } else {
-                if (this.isHurt()) {
-                    this.speed = 5;
-                    this.world.statusbarHealth.setPercentage(this.health);
-                    this.playAnimation(this.IMAGES_HURT);
-                } else {
-                    if (!this.isAboveGround()) {
-                        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                            this.speed = 10;
-                            this.playAnimation(this.IMAGES_WALKING);
-                        }
-                    }
-                }
-            }
-        }, 1000 / 40)
 
         setInterval(() => {
-            if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMPING);
-            }
+            this.animationIfIsDead();
+            this.animationIfIsHurt();
+            this.animationIfWalking();
+        }, 1000 / 60)
+
+        setInterval(() => {
+            this.animationIfJumping();
+
         }, 1000 / 12)
 
         setInterval(() => {
-            if (this.renderLongIdleImages) {
-                this.playAnimation(this.IMAGES_LONG_IDLE);
-            } else {
-                this.playAnimation(this.IMAGES_IDLE);
-            }
+            this.animationLongIdleOrIdle();
         }, 225)
     }
+
+
+    ifKeyboardRight() {
+        if (this.world.keyboard.RIGHT && this.X < this.world.level.level_end_x) {
+            this.moveRight();
+            this.otherDirection = false;
+            this.playCharWalkingSound();
+            this.world.camera_x = -this.X + 200;
+        }
+    }
+
+
+    ifKeyboardLeft() {
+        if (this.world.keyboard.LEFT && this.X > -100) {
+            this.moveLeft();
+            this.otherDirection = true;
+            this.playCharWalkingSound();
+            this.world.camera_x = -this.X + 200;
+        }
+    }
+
+
+    ifKeyboardSpace() {
+        if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+            this.jump();
+            this.playJumpSounds();
+        }
+    }
+
+
+    animationIfIsDead() {
+        if (this.isDead()) {
+            this.playAnimation(this.IMAGES_DEAD);
+        }
+    }
+
+
+    animationIfIsHurt() {
+        if (this.isHurt()) {
+            this.speed = 5;
+            this.world.statusbarHealth.setPercentage(this.health);
+            this.playAnimation(this.IMAGES_HURT);
+        }
+    }
+
+
+    animationIfWalking() {
+        if (!this.isAboveGround()) {
+            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                this.speed = 10;
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+        }
+    }
+
+
+    animationIfJumping() {
+        if (this.isAboveGround()) {
+            this.playAnimation(this.IMAGES_JUMPING);
+        }
+    }
+
+
+    animationLongIdleOrIdle() {
+        if (this.renderLongIdleImages) {
+            this.playAnimation(this.IMAGES_LONG_IDLE);
+        } else {
+            this.playAnimation(this.IMAGES_IDLE);
+        }
+    }
+
 
     playCharWalkingSound() {
         this.walking_sound.play();
     }
 
-    playCharJumpSounds() {
+
+    playJumpSounds() {
         if (this.currentPlaying) {
-            if (!this.currentPlaying.ended) {
+            if (!this.currentPlaying.ended) {//set Time to be sure Audio is ended, before play next jumpSound
                 this.currentPlaying.currentTime = 10.000;
             }
             this.playJumpSound();
@@ -185,11 +222,16 @@ class Character extends MovableObject {
 
 
     playJumpSound() {
-        this.currentPlaying = new Audio(this.jump_sounds[this.i]);
+        this.currentPlaying = new Audio(this.jump_sounds[this.jumpSoundPathId]);
         this.currentPlaying.play();
-        this.i++;
-        if (this.i >= this.jump_sounds.length) {
-            this.i = 0;
+        this.setJumpSoundPathId();
+    }
+
+
+    setJumpSoundPathId() {
+        this.jumpSoundPathId++;
+        if (this.jumpSoundPathId >= this.jump_sounds.length) {
+            this.jumpSoundPathId = 0;
         }
     }
 }
