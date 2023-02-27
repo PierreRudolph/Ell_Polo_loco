@@ -1,10 +1,42 @@
+@font-face {
+    font-family: 'zabars';
+    src: url('fonts/zabars.ttf') format('truetype');
+    /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
 body {
+    font-family: 'zabars', Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: black;
+}
+
+h1 {
+    font-size: 60px;
+    letter-spacing: 5px;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.317);
 }
 
 canvas {
-    background-color: black;
+    display: block;
+}
+
+.browser-bg {
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+}
+
+.user-help {
+    margin-top: 10px;
+    font-size: 21px;
+    width: 720px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }

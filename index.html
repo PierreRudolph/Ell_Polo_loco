@@ -37,13 +37,23 @@
 </head>
 
 <body onload="init()">
+    <img class="browser-bg" src="img/background_browser.jpg">
+
     <audio id="game-bg-sound" src="audio/game-bg-sound1.mp3"></audio>
     <audio id="boss-bg-sound" src="audio/boss_chicken_fight_sound.mp3"></audio>
     <h1>El Pollo Loco</h1>
 
-    <canvas id="canvas" width="720px" height="480px">
-
-    </canvas>
+    <div>
+        <canvas id="canvas" width="720px" height="480px">
+        </canvas>
+    </div>
+    <div class="user-help">
+        <span>Right Arrow: Walk Right</span>
+        <span>Left Arrow: Walk Left</span>
+        <span>Space: Jump</span>
+        <span>B: enter Fullscreen</span>
+        <span>Esc: exit Fullscreen</span>
+    </div>
 </body>
 
 </html>

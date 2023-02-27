@@ -6,17 +6,20 @@ class Character extends MovableObject {
     speed = 5;
     renderLongIdleImages = false;
     world;
+    dead_sound = new Audio('audio/char_dying.mp3');
     walking_sound = new Audio('audio/walking_fast_char.mp3');
     collected_bottles = [];
     collected_coins = [];
     currentPlaying;
+    currentPlayingHurtSound;
     jumpSoundPathId = 0;
+    hurtSoundPathId = 0;
 
     offset = {
         right: 40,
         left: 20,
         top: 80,
-        bottom: 0
+        bottom: 40
     }
 
     IMAGES_WALKING = [
@@ -95,6 +98,13 @@ class Character extends MovableObject {
         'audio/char_jump/jump_10.mp3'
     ];
 
+    hurt_sounds = [
+        'audio/char_hurt_1.mp3',
+        'audio/char_hurt_2.mp3',
+        'audio/char_hurt_3.mp3',
+        'audio/char_hurt_4.mp3'
+    ]
+
     constructor() {
         super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -165,6 +175,7 @@ class Character extends MovableObject {
     animationIfIsDead() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
+            this.dead_sound.play();
         }
     }
 
@@ -206,6 +217,33 @@ class Character extends MovableObject {
 
     playCharWalkingSound() {
         this.walking_sound.play();
+    }
+
+
+    playHurtSounds() {
+        if (this.currentPlayingHurtSound) {
+            if (!this.currentPlayingHurtSound.ended) {//set Time to be sure Audio is ended, before play next jumpSound
+                this.currentPlayingHurtSound.currentTime = 10.000;
+            }
+            this.playHurtSound();
+        } else {
+            this.playHurtSound();
+        }
+    }
+
+
+    playHurtSound() {
+        this.currentPlayingHurtSound = new Audio(this.hurt_sounds[this.hurtSoundPathId]);
+        this.currentPlayingHurtSound.play();
+        this.setHurtSoundPathId();
+    }
+
+
+    setHurtSoundPathId() {
+        this.hurtSoundPathId++;
+        if (this.hurtSoundPathId >= this.hurt_sounds.length) {
+            this.hurtSoundPathId = 0;
+        }
     }
 
 

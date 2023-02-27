@@ -1,6 +1,8 @@
 class ThrowableObject extends MovableObject {
     speed = 15;
     colliding = false;
+    splashSound = new Audio('audio/glass_smash.mp3');
+    throwInterval;
     IMAGES_ROTATION = [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
         'img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
@@ -32,13 +34,15 @@ class ThrowableObject extends MovableObject {
     throw(otherDirection) {
         this.applyGravity();
 
-        setInterval(() => {
+        this.throwInterval = setInterval(() => {
             if (!this.colliding) {
                 this.playAnimation(this.IMAGES_ROTATION);
                 this.setObjectThrowingDirection(otherDirection);
             } else {
                 this.applyGravity(this.colliding);
                 this.playAnimation(this.IMAGES_SPLASH);
+                this.splashSound.play();
+                clearInterval(this.throwInterval);
             }
         }, 25);
     }

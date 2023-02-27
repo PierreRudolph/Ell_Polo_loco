@@ -198,6 +198,7 @@ class World {
                     setTimeout(() => { this.throwableObjects.splice(i, 1); }, 300);
                 }
                 if (object.y > 430) {
+                    clearInterval(this.throwableObjects[i].throwInterval);
                     this.throwableObjects.splice(i, 1);
                 }
             }

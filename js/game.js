@@ -14,7 +14,7 @@ function init() {
 }
 
 function setCanvasXandY(canvas) {
-    canvas.style.width = '80%'
+
 }
 
 
