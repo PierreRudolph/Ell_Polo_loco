@@ -123,7 +123,7 @@ class Character extends MovableObject {
             this.ifKeyboardRight();
             this.ifKeyboardLeft();
             this.ifKeyboardSpace();
-
+            this.ifKeyboardKeyNOrEscape();
         }, 1000 / 60);
 
 
@@ -136,7 +136,7 @@ class Character extends MovableObject {
         setInterval(() => {
             this.animationIfJumping();
             this.ifKeyboardKeyB();
-            this.ifKeyboardEsc();
+
         }, 1000 / 12)
 
         setInterval(() => {
@@ -182,8 +182,8 @@ class Character extends MovableObject {
     }
 
 
-    ifKeyboardEsc() {
-        if (this.world.keyboard.N && this.fullscreen == true) {
+    ifKeyboardKeyNOrEscape() {
+        if (this.world.keyboard.N && this.fullscreen == true || this.world.keyboard.ESCAPE && this.fullscreen == true) {
             this.fullscreen = false;
             exitFullscreen();
         }

@@ -8,4 +8,5 @@ class Keyboard {
     D = false;
     B = false;
     N = false;
+    ESCAPE = false;
 }

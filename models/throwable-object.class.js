@@ -40,7 +40,8 @@ class ThrowableObject extends MovableObject {
                 this.setObjectThrowingDirection(otherDirection);
             } else {
                 this.applyGravity(this.colliding);
-                this.playAnimation(this.IMAGES_SPLASH);
+                this.correctLandingPoint(otherDirection);
+                setInterval(() => { this.playAnimation(this.IMAGES_SPLASH); }, 10);
                 this.splashSound.play();
                 clearInterval(this.throwInterval);
             }
@@ -52,6 +53,15 @@ class ThrowableObject extends MovableObject {
             this.X -= this.speed;
         } else {
             this.X += this.speed;
+        }
+    }
+
+    correctLandingPoint(otherDirection) {
+        this.y += 20;
+        if (otherDirection) {
+            this.X -= 20;
+        } else {
+            this.X += 20;
         }
     }
 }

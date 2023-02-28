@@ -172,7 +172,9 @@ class World {
                 this.character.jump();
                 this.character.playJumpSounds();
             } else {
-                this.character.hit();
+                if (!this.character.isHurt()) {
+                    this.character.hit();
+                }
             }
         }
     }
@@ -183,7 +185,9 @@ class World {
             this.throwableObjects.forEach(obj => {
                 if (obj.isColliding(enemy)) {
                     obj.colliding = true;
-                    enemy.hit();
+                    if (!enemy.isHurt()) {
+                        enemy.hit();
+                    }
                 }
             })
         }

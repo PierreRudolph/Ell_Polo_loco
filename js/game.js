@@ -47,6 +47,9 @@ window.addEventListener('keydown', (event) => {
     if (event.code == 'KeyN') {
         keyboard.N = true;
     }
+    if (event.code == 'Escape') {
+        keyboard.ESCAPE = true;
+    }
 })
 
 window.addEventListener('keyup', (event) => {
@@ -74,6 +77,9 @@ window.addEventListener('keyup', (event) => {
     }
     if (event.code == 'KeyN') {
         keyboard.N = false;
+    }
+    if (event.code == 'Escape') {
+        keyboard.ESCAPE = false;
     }
 })
 

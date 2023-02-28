@@ -2,6 +2,12 @@ class Chicken extends MovableObject {
     height = 70;
     width = 100;
     y = 350;
+    offset = {
+        right: 30,
+        left: 30,
+        top: 20,
+        bottom: 40
+    }
     chicken_sound = new Audio('audio/chicken_normal.mp3');
     chicken_hit_sound = new Audio('audio/chicken_hit.mp3');
 
