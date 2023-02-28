@@ -1,10 +1,11 @@
 class World {
-    character = new Character();
+
     statusbarHealth = new StatusbarHealth();
     statusbarCoin = new StatusbarCoin();
     statusbarBottle = new StatusbarBottle();
     throwableObjects = [];
     level = level1;
+    character = new Character();
     BackgroundObjects = level1.BackgroundObjects;
     currentThrowingObject;
 
@@ -25,6 +26,7 @@ class World {
 
     setWorld() {
         this.character.world = this;
+        this.level.enemies[5].world = this;
     }
 
 
@@ -35,7 +37,7 @@ class World {
 
         this.addObjectsToMap(this.level.BackgroundObjects);
         this.addObjectsToMap(this.level.clouds);
-        this.addToMap(this.character);
+
 
         this.ctx.translate(-this.camera_x, 0);
         //---Space for fixed Objects---//
@@ -48,6 +50,7 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
         this.addObjectsToMap(this.throwableObjects);
+        this.addToMap(this.character);
 
         this.ctx.translate(-this.camera_x, 0);
 
@@ -167,9 +170,10 @@ class World {
 
     checkCharCollisions(enemy) {
         if (this.character.isColliding(enemy)) {
-            if (this.character.isAboveGround() && enemy instanceof Chicken || enemy instanceof SmallChicken) {
+            if (this.character.isAboveGround() && enemy instanceof Chicken || this.character.isAboveGround() && enemy instanceof SmallChicken) {
                 enemy.kill();
                 this.character.jump();
+                //this.character.speedY = 0; //optional, sieht dann so aus als ob chicken zerquetscht werden.
                 this.character.playJumpSounds();
             } else {
                 if (!this.character.isHurt()) {

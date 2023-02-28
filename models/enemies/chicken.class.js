@@ -1,10 +1,10 @@
 class Chicken extends MovableObject {
     height = 70;
     width = 100;
-    y = 350;
+    y = 345;
     offset = {
         right: 30,
-        left: 30,
+        left: 10,
         top: 20,
         bottom: 40
     }
@@ -54,12 +54,7 @@ class Chicken extends MovableObject {
             if (!this.isDead() && !this.isHurt() && this.otherDirection) {
                 this.moveRight();
             }
-            if (this.X < 100) {
-                this.otherDirection = true;
-            }
-            if (this.X > 2200) {
-                this.otherDirection = false;
-            }
+            this.setOtherDirection(100, 2200);
         }, 1000 / 60);
     }
     playChickenSoundDisplaced() {

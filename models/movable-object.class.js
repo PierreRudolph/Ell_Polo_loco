@@ -6,14 +6,18 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     health = 100;
     lastHit = 0;
-
-
+    imageIndex = 0;
+    inBattle = false;
     applyGravity(objCollided) {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
                 if (!objCollided) { //objCollided, damit throwableObject nicht mehr fällt, falls es mit einem gegner Kollidiert.
-                    this.y -= this.speedY;
-                    this.speedY -= this.acceleration;
+                    if (this instanceof Character && this.y > 200) {// behelfs methode, um die y position zu reseten, falls y größer als 200 ist.
+                        this.y = 200;
+                    } else {
+                        this.y -= this.speedY;
+                        this.speedY -= this.acceleration;
+                    }
                 } else {
                     this.speedY = 0;
                 }
@@ -33,10 +37,8 @@ class MovableObject extends DrawableObject {
     }
 
     playAnimation(images) {
-        let i = this.currentImage % images.length;//iteriert durch Array,(% ist eine undendliche schleife)
-        let path = images[i];
-        this.playImgAudioSyncEndbossScream(images, i);
-        this.jumpOnJumpImg(images, i);
+        this.imageIndex = this.currentImage % images.length;//iteriert durch Array,(% ist eine undendliche schleife)
+        let path = images[this.imageIndex];
         this.img = this.imageCache[path];
         this.currentImage++;
     }
@@ -49,18 +51,7 @@ class MovableObject extends DrawableObject {
         }
     }
 
-    jumpOnJumpImg(images, i) {
-        if (images == this.IMAGES_ATTACK && i == 4) {
-            this.jump();
-            //this.moveLeft();
-        }
-    }
 
-    playImgAudioSyncEndbossScream(images, i) {
-        if (images == this.IMAGES_ALERT && i == 6) {
-            this.chicken_alert_sound.play();
-        }
-    }
 
 
     moveRight() {
@@ -116,6 +107,14 @@ class MovableObject extends DrawableObject {
 
     }
 
+    setOtherDirection(startX, endX) {
+        if (this.X < startX && !this.inBattle) {
+            this.otherDirection = true;
+        }
+        if (this.X > endX) {
+            this.otherDirection = false;
+        }
+    }
 
     // Bessere Formel zur Kollisionsberechnung (Genauer)
     /*isColliding(obj) {

@@ -3,10 +3,10 @@ class SmallChicken extends MovableObject {
     width = 50;
     y = 360;
     offset = {
-        right: -20,
-        left: -10,
-        top: -20,
-        bottom: -20
+        right: 15,
+        left: 10,
+        top: 10,
+        bottom: 15
     }
     chicken_sound = new Audio('audio/chicken_small.mp3');
     chicken_hit_sound = new Audio('audio/small_chicken_hit.mp3');
@@ -39,7 +39,7 @@ class SmallChicken extends MovableObject {
 
         setInterval(() => {
             this.moveLeftOrRight();
-            this.checkThisXSetOtherDirection();
+            this.setOtherDirection(100, 1000);
         }, 1000 / 60);
     }
 
@@ -70,16 +70,6 @@ class SmallChicken extends MovableObject {
         }
         if (!this.isDead() && !this.isHurt() && this.otherDirection) {
             this.moveRight();
-        }
-    }
-
-
-    checkThisXSetOtherDirection() {
-        if (this.X < 100) {
-            this.otherDirection = true;
-        }
-        if (this.X > 1000) {
-            this.otherDirection = false;
         }
     }
 

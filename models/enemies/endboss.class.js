@@ -3,14 +3,19 @@ class Endboss extends MovableObject {
     height = 450;
     y = 20;
     speedY = 0;
+    speed = 0.50;
     alert = false;
+    attack = false
     chicken_hit_sound = new Audio('audio/boss_chicken_hit.mp3');
     chicken_alert_sound = new Audio('audio/boss_chicken_alert.mp3');
+    alertImageIndex = 0;
+    world;
+
     offset = {
-        right: 40,
-        left: 30,
-        top: 70,
-        bottom: 100
+        right: 150,
+        left: 80,
+        top: 120,
+        bottom: 150
     }
 
     IMAGES_WALKING = [
@@ -73,9 +78,8 @@ class Endboss extends MovableObject {
 
 
     animate() {
-        let imageIndex = 0;
         setInterval(() => {
-            this.playRightAnimations(imageIndex);
+            this.playRightAnimations();
         }, 250)
 
         setInterval(() => {
@@ -84,49 +88,86 @@ class Endboss extends MovableObject {
     }
 
 
-    playRightAnimations(imageIndex) {
-        if (!this.isDead() && !this.isHurt() && !this.alert) {
-            this.playAnimation(this.IMAGES_WALKING)
-        } else {
-            imageIndex = this.ifAlert(imageIndex);
-        }
-        this.ifAlertAnimationDone(imageIndex);
+    playRightAnimations() {
+        this.walkIfNothingElse();
+        this.ifAlert();
+        this.attackIfAlertAnimationDone();
         this.IfIsHurt();
         this.ifIsDead();
     }
 
-
-
-
-    moveLeftOrRight() {
-        if (!this.isDead() && !this.alert && this.X > 2000) {
-            this.otherDirection = false;
-            this.moveLeft();
-        } else if (this.X > 2600 && !this.isDead() && !this.alert) {
-            this.otherDirection = true;
-            this.moveRight();
+    walkIfNothingElse() {
+        if (!this.isDead() && !this.isHurt() && !this.alert) {
+            this.playAnimation(this.IMAGES_WALKING)
         }
     }
 
-
-    ifAlert(imageIndex) {
-        if (this.alert && imageIndex <= 10) {
+    ifAlert() {
+        if (this.alert) {
             this.playAnimation(this.IMAGES_ALERT);
+            this.endbossScreamAnimation();
             stopBgMusic('game-bg-sound');
             playBgMusic('boss-bg-sound');
-            imageIndex++;
+            this.alertImageIndex++;
         }
-        return imageIndex;
     }
 
+    endbossJumpAnimation() {
+        if (this.imageIndex == 4) {
+            this.attack = true;
+            this.speed = 2;
+            this.jump();
+        }
+    }
+    endbossScreamAnimation() {
+        if (this.imageIndex == 6) {
+            this.chicken_alert_sound.play();
+        }
+    }
 
-    ifAlertAnimationDone(imageIndex) {
-        if (imageIndex > 10) {
+    moveLeftOrRight() {
+        if (!this.isDead() && !this.isHurt() && !this.otherDirection && !this.alert && !this.attack) {
+            this.moveLeft();
+        } else if (!this.isDead() && !this.isHurt() && this.otherDirection && !this.alert && !this.attack) {
+            this.moveRight();
+        }
+        if (this.inBattle) {
+            if (this.world.character.X > this.X + this.width) {
+                this.otherDirection = true;
+            } else if (this.world.character.X + this.world.character.width < this.X) {
+                this.otherDirection = false;
+            }
+        } else {
+            this.setOtherDirection(1700, 2590);
+        }
+    }
+
+    attackIfAlertAnimationDone() {
+        if (this.alertImageIndex > 14) {
             this.alert = false;
-            this.playAnimation(this.IMAGES_ATTACK);
+            this.resetOtherDirection();
+            this.attackIfNearChar();
+            this.resetAttackValues();
         }
     }
 
+    attackIfNearChar() {
+        if (this.X <= (this.world.character.X + this.world.character.width + 40)) {
+            this.playAnimation(this.IMAGES_ATTACK);
+            this.endbossJumpAnimation();
+        }
+    }
+
+    resetAttackValues() {
+        this.speed = 1;
+        this.attack = false;
+    }
+
+    resetOtherDirection() {
+        if (this.otherDirection && !this.world.character.X > this.X + this.width) {
+            this.otherDirection = false;
+        }
+    }
 
     ifIsDead() {
         if (this.isDead()) {
@@ -139,6 +180,7 @@ class Endboss extends MovableObject {
     IfIsHurt() {
         if (this.isHurt()) {
             if (!this.alert) {
+                this.inBattle = true;
                 this.alert = true;
                 this.playIsHurtSound();
             }
@@ -149,7 +191,6 @@ class Endboss extends MovableObject {
 
     playFullAnimation() {
         let i = 0;
-
     }
 
 

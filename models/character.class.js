@@ -136,12 +136,10 @@ class Character extends MovableObject {
         setInterval(() => {
             this.animationIfJumping();
             this.ifKeyboardKeyB();
-
         }, 1000 / 12)
 
         setInterval(() => {
             this.animationLongIdleOrIdle();
-
         }, 225)
     }
 
@@ -189,7 +187,6 @@ class Character extends MovableObject {
         }
     }
 
-
     animationIfIsDead() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
@@ -200,9 +197,11 @@ class Character extends MovableObject {
 
     animationIfIsHurt() {
         if (this.isHurt()) {
+            this.playHurtSounds();
             this.speed = 5;
             this.world.statusbarHealth.setPercentage(this.health);
             this.playAnimation(this.IMAGES_HURT);
+
         }
     }
 

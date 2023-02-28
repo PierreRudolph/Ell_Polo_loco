@@ -40,8 +40,11 @@ canvas {
 .user-help {
     margin-top: 10px;
     font-size: 21px;
-    width: 720px;
+    width: 718px;
+    height: 45px;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    background-color: #f6ad7e;
+    border-radius: 16px;
 }
