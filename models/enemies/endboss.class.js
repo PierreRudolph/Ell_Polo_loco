@@ -8,6 +8,8 @@ class Endboss extends MovableObject {
     attack = false
     chicken_hit_sound = new Audio('audio/boss_chicken_hit.mp3');
     chicken_alert_sound = new Audio('audio/boss_chicken_alert.mp3');
+    chicken_attack_sound = new Audio('audio/woosh.mp3');
+
     alertImageIndex = 0;
     world;
 
@@ -15,7 +17,7 @@ class Endboss extends MovableObject {
         right: 150,
         left: 80,
         top: 120,
-        bottom: 150
+        bottom: 220
     }
 
     IMAGES_WALKING = [
@@ -78,13 +80,18 @@ class Endboss extends MovableObject {
 
 
     animate() {
-        setInterval(() => {
+        let animationInterval = setInterval(() => {
             this.playRightAnimations();
         }, 250)
 
-        setInterval(() => {
+        let movingInterval = setInterval(() => {
             this.moveLeftOrRight();
+            if (this.inBattle) {
+                this.world.statusbarBoss.setPercentage(this.health);
+            }
         }, 1000 / 60);
+        intervalIds.push(animationInterval);
+        intervalIds.push(movingInterval);
     }
 
 
@@ -96,11 +103,13 @@ class Endboss extends MovableObject {
         this.ifIsDead();
     }
 
+
     walkIfNothingElse() {
         if (!this.isDead() && !this.isHurt() && !this.alert) {
             this.playAnimation(this.IMAGES_WALKING)
         }
     }
+
 
     ifAlert() {
         if (this.alert) {
@@ -112,18 +121,34 @@ class Endboss extends MovableObject {
         }
     }
 
+
+    attackIfNearChar() {
+        this.offset.bottom = 0;
+        if (!this.otherDirection && this.X <= (this.world.character.X + this.world.character.width + 80) && !this.isDead()) {
+            this.playAnimation(this.IMAGES_ATTACK);
+            this.endbossJumpAnimation();
+        } else if (this.otherDirection && ((this.X + this.width) - this.offset.right) >= (this.world.character.X - 80) && !this.isDead()) {
+            this.playAnimation(this.IMAGES_ATTACK);
+            this.endbossJumpAnimation();
+        }
+    }
+
+
     endbossJumpAnimation() {
-        if (this.imageIndex == 4) {
+        if (this.imageIndex == 4 || this.imageIndex == 3) {
+            this.chicken_attack_sound.play();
             this.attack = true;
-            this.speed = 2;
             this.jump();
         }
     }
+
+
     endbossScreamAnimation() {
         if (this.imageIndex == 6) {
             this.chicken_alert_sound.play();
         }
     }
+
 
     moveLeftOrRight() {
         if (!this.isDead() && !this.isHurt() && !this.otherDirection && !this.alert && !this.attack) {
@@ -131,43 +156,40 @@ class Endboss extends MovableObject {
         } else if (!this.isDead() && !this.isHurt() && this.otherDirection && !this.alert && !this.attack) {
             this.moveRight();
         }
-        if (this.inBattle) {
-            if (this.world.character.X > this.X + this.width) {
-                this.otherDirection = true;
-            } else if (this.world.character.X + this.world.character.width < this.X) {
-                this.otherDirection = false;
-            }
+        if (this.inBattle && !this.isDead()) {
+            this.huntCharacter();
+            this.setOffsetBottomIfThrowingObject();
         } else {
             this.setOtherDirection(1700, 2590);
         }
     }
 
+
+    setOffsetBottomIfThrowingObject() {
+        if (this.world.throwableObjects.length > 0) {
+            this.offset.bottom = 220;
+        }
+    }
+
+
     attackIfAlertAnimationDone() {
         if (this.alertImageIndex > 14) {
             this.alert = false;
-            this.resetOtherDirection();
             this.attackIfNearChar();
-            this.resetAttackValues();
+            this.speed = 2;
+            this.attack = false;
         }
     }
 
-    attackIfNearChar() {
-        if (this.X <= (this.world.character.X + this.world.character.width + 40)) {
-            this.playAnimation(this.IMAGES_ATTACK);
-            this.endbossJumpAnimation();
-        }
-    }
 
-    resetAttackValues() {
-        this.speed = 1;
-        this.attack = false;
-    }
-
-    resetOtherDirection() {
-        if (this.otherDirection && !this.world.character.X > this.X + this.width) {
+    huntCharacter() {
+        if (this.world.character.X > this.X + this.width) {
+            this.otherDirection = true;
+        } else if (this.world.character.X + this.world.character.width < this.X) {
             this.otherDirection = false;
         }
     }
+
 
     ifIsDead() {
         if (this.isDead()) {

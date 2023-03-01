@@ -12,11 +12,10 @@ class MovableObject extends DrawableObject {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
                 if (!objCollided) { //objCollided, damit throwableObject nicht mehr fällt, falls es mit einem gegner Kollidiert.
+                    this.y -= this.speedY;
+                    this.speedY -= this.acceleration;
                     if (this instanceof Character && this.y > 200) {// behelfs methode, um die y position zu reseten, falls y größer als 200 ist.
                         this.y = 200;
-                    } else {
-                        this.y -= this.speedY;
-                        this.speedY -= this.acceleration;
                     }
                 } else {
                     this.speedY = 0;
@@ -50,9 +49,6 @@ class MovableObject extends DrawableObject {
             this.currentImage++;
         }
     }
-
-
-
 
     moveRight() {
         this.X += this.speed;

@@ -2,6 +2,7 @@ class ThrowableObject extends MovableObject {
     speed = 15;
     colliding = false;
     splashSound = new Audio('audio/glass_smash.mp3');
+    throwSound = new Audio('audio/woosh.mp3');
     throwInterval;
     IMAGES_ROTATION = [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -33,7 +34,9 @@ class ThrowableObject extends MovableObject {
 
     throw(otherDirection) {
         this.applyGravity();
-
+        this.throwSound.volume = 0.5;
+        this.splashSound.volume = 0.5;
+        this.throwSound.play();
         this.throwInterval = setInterval(() => {
             if (!this.colliding) {
                 this.playAnimation(this.IMAGES_ROTATION);

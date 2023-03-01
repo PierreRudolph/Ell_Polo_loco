@@ -31,16 +31,18 @@ class SmallChicken extends MovableObject {
         this.chicken_sound.volume = 0.5;
         this.chicken_hit_sound.volume = 1;
         this.playChickenSoundDisplaced();
-        setInterval(() => {
+        let animationInterval = setInterval(() => {
             this.animationIfWalking();
             this.actionsIfIsDead();
             this.actionsIfIsHurt();
         }, 250)
 
-        setInterval(() => {
+        let movingInterval = setInterval(() => {
             this.moveLeftOrRight();
             this.setOtherDirection(100, 1000);
         }, 1000 / 60);
+        intervalIds.push(animationInterval);
+        intervalIds.push(movingInterval);
     }
 
     animationIfWalking() {

@@ -2,7 +2,7 @@ class Coin extends MovableObject {
     name = 'Coin';
     height = 120;
     y = 290;
-
+    collectSound = new Audio('audio/collect_coin.mp3');
 
     offset = {
         right: 40,
@@ -28,12 +28,12 @@ class Coin extends MovableObject {
                 this.y = y;
         }
         this.animate();
+        this.collectSound.volume = 0.5;
     }
 
 
     animate() {
-        setInterval(() => {
-            this.playAnimation(this.IMAGES);
-        }, 250)
+        let animationInterval = setInterval(() => { this.playAnimation(this.IMAGES); }, 250);
+        intervalIds.push(animationInterval);
     }
 }

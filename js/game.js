@@ -3,20 +3,16 @@ let ctx;
 let world;
 let timeout;
 let keyboard = new Keyboard();
-
+let intervalIds = [];
 function init() {
     canvas = document.getElementById('canvas');
-    setCanvasXandY(canvas);
     world = new World(canvas, keyboard);
     setLongIdleTimeout();
-
-    console.log('My Character is', world.character);
 }
 
-function setCanvasXandY(canvas) {
-
+function pushIntervalId(intervalId) {
+    intervalIds.push(intervalId);
 }
-
 
 window.addEventListener('keydown', () => {
     keyboard.ACTIVE = true;
@@ -83,6 +79,16 @@ window.addEventListener('keyup', (event) => {
     }
 })
 
+function setStoppableInterval(fn, time) {
+    let newInterval = setInterval(fn, time);
+    intervalIds.push(newInterval);
+}
+
+function stopGame() {
+    intervalIds.forEach(clearInterval);
+    document.querySelectorAll('audio').forEach(el => { el.pause() });
+}
+
 function isPlaying(audelem) { return !audelem.paused; }
 
 function setLongIdleTimeout() {
@@ -99,13 +105,13 @@ function resetTimeout() {
 
 function playBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
-
-    if (music.paused == true) {
-        music.volume = 0.8;
+    if (music.paused) {
+        music.volume = 0.5;
         music.load();
         music.play();
         music.loop = true;
     }
+
 }
 
 function stopBgMusic(audioId) {

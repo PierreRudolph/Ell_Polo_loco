@@ -1,17 +1,19 @@
 class World {
-
+    level = level1;
     statusbarHealth = new StatusbarHealth();
     statusbarCoin = new StatusbarCoin();
     statusbarBottle = new StatusbarBottle();
+    statusbarBoss = new StatusbarBoss();
     throwableObjects = [];
-    level = level1;
+
+    keyboard;
     character = new Character();
     BackgroundObjects = level1.BackgroundObjects;
     currentThrowingObject;
 
     ctx;
     canvas;
-    keyboard;
+
     camera_x = 0;
 
     constructor(canvas, keyboard) {
@@ -27,6 +29,7 @@ class World {
     setWorld() {
         this.character.world = this;
         this.level.enemies[5].world = this;
+        this.statusbarBoss.world = this;
     }
 
 
@@ -43,9 +46,12 @@ class World {
         //---Space for fixed Objects---//
         this.addToMap(this.statusbarHealth);
         this.addToMap(this.statusbarCoin);
-
         this.addToMap(this.statusbarBottle);
+
+        //---Space for fixed Objects---//
         this.ctx.translate(this.camera_x, 0);
+
+        this.addToMap(this.statusbarBoss);
 
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
@@ -227,10 +233,12 @@ class World {
 
     pushCollectable(collectable) {
         if (collectable.name == 'Coin') {
+            collectable.collectSound.play();
             this.character.collected_coins.push(collectable);
             this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20);
         }
         if (collectable.name == 'Bottle') {
+            collectable.collectSound.play();
             this.character.collected_bottles.push(collectable);
             this.statusbarBottle.setPercentage(this.statusbarBottle.percentage += 20);
         }
@@ -238,8 +246,8 @@ class World {
 
 
     playGameBgSoundIfUserAction() {
-        if (this.keyboard.RIGHT) {
-            //playBgMusic('game-bg-sound');
+        if (this.keyboard.RIGHT && !this.level.enemies[5].inBattle) {
+            playBgMusic('game-bg-sound');
         }
     }
 }
