@@ -6,9 +6,93 @@
 
 body {
     font-family: 'zabars', Arial, Helvetica, sans-serif;
+    margin: 0px;
+}
+
+.content {
+    margin: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100vh;
+}
+
+.start-screen-div {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+}
+
+.start-screen {
+    width: 100%;
+    /*object-fit: contain;*/
+    border-radius: 20px;
+}
+
+.gameover-screen-div {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+}
+
+.gameover-screen {
+    width: 100%;
+    border-radius: 20px;
+}
+
+.lost-screen-div {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.lost-screen {
+    width: 100%;
+    border-radius: 20px;
+}
+
+.pause-screen {
+    background-color: rgba(121, 121, 121, 0.317);
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-radius: 20px;
+}
+
+.volume-btn {
+    cursor: pointer;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 45px;
+    z-index: 1;
+}
+
+.play-btn {
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 45px;
+}
+
+.play-btn:active {
+    filter: invert();
 }
 
 h1 {
@@ -20,10 +104,20 @@ h1 {
 .fullscreen-div {
     display: flex;
     justify-content: center;
+    margin-top: 150px;
+    position: relative;
 }
 
 canvas {
     display: block;
+}
+
+.canvas-border-radius {
+    border-radius: 20px;
+}
+
+.canvas-shadow {
+    box-shadow: -5px 10px 6px -2px black;
 }
 
 .browser-bg {
@@ -47,4 +141,8 @@ canvas {
     align-items: center;
     background-color: #f6ad7e;
     border-radius: 16px;
+}
+
+.d-none {
+    display: none;
 }

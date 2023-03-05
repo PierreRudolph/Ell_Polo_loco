@@ -6,14 +6,14 @@ class DrawableObject {
     y = 280;
     height = 150;
     width = 100;
-    offset = {
+    /*offset = {
         right: 0,
         left: 0,
         top: 0,
         bottom: 0
-    }
+    }*/
 
-    //loadiMage('img/test.png);
+    //loadImage('img/test.png);
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;

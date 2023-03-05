@@ -8,10 +8,12 @@ class MovableObject extends DrawableObject {
     lastHit = 0;
     imageIndex = 0;
     inBattle = false;
-    applyGravity(objCollided) {
-        setInterval(() => {
+    noGravity = false;
+
+    applyGravity(noGravity) {
+        let gravityInterval = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
-                if (!objCollided) { //objCollided, damit throwableObject nicht mehr fällt, falls es mit einem gegner Kollidiert.
+                if (!noGravity) { //objCollided, damit throwableObject nicht mehr fällt, falls es mit einem gegner Kollidiert.
                     this.y -= this.speedY;
                     this.speedY -= this.acceleration;
                     if (this instanceof Character && this.y > 200) {// behelfs methode, um die y position zu reseten, falls y größer als 200 ist.
@@ -22,6 +24,7 @@ class MovableObject extends DrawableObject {
                 }
             }
         }, 1000 / 30);
+        pushIntervalId(gravityInterval);
     }
 
 
@@ -103,6 +106,7 @@ class MovableObject extends DrawableObject {
 
     }
 
+
     setOtherDirection(startX, endX) {
         if (this.X < startX && !this.inBattle) {
             this.otherDirection = true;
@@ -130,16 +134,16 @@ class MovableObject extends DrawableObject {
                 (this.y + this.offset.top) <= (obj.y + obj.height) - obj.offset.bottom;
         }
     }
+}
 
-    /*isColliding(obj) {
-        return (this.X + this.width) >= obj.X &&
-            this.X <= (obj.X + obj.width) &&
-            (this.y + this.height) >= obj.y &&
-            (this.y) <= (obj.y + obj.height);
-    }*/
+/*isColliding(obj) {
+    return (this.X + this.width) >= obj.X &&
+        this.X <= (obj.X + obj.width) &&
+        (this.y + this.height) >= obj.y &&
+        (this.y) <= (obj.y + obj.height);
+}*/
     //&&
     //obj.onCollisionCourse;
     // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt.
     //Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
 
-}

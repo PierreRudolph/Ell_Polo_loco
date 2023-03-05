@@ -9,7 +9,6 @@ class Endboss extends MovableObject {
     chicken_hit_sound = new Audio('audio/boss_chicken_hit.mp3');
     chicken_alert_sound = new Audio('audio/boss_chicken_alert.mp3');
     chicken_attack_sound = new Audio('audio/woosh.mp3');
-
     alertImageIndex = 0;
     world;
 
@@ -75,20 +74,20 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_DEAD);
         this.X = 2600;
         this.animate();
-        this.applyGravity();
     }
 
 
     animate() {
+        this.applyGravity();
         let animationInterval = setInterval(() => {
             this.playRightAnimations();
+            this.playBattleSound();
         }, 250)
 
         let movingInterval = setInterval(() => {
             this.moveLeftOrRight();
-            if (this.inBattle) {
-                this.world.statusbarBoss.setPercentage(this.health);
-            }
+            this.checkDirection();
+            this.setStatusbarIfInBattle();
         }, 1000 / 60);
         intervalIds.push(animationInterval);
         intervalIds.push(movingInterval);
@@ -105,8 +104,8 @@ class Endboss extends MovableObject {
 
 
     walkIfNothingElse() {
-        if (!this.isDead() && !this.isHurt() && !this.alert) {
-            this.playAnimation(this.IMAGES_WALKING)
+        if (!this.isDead() && !this.isHurt()) {
+            this.playAnimation(this.IMAGES_WALKING);
         }
     }
 
@@ -115,29 +114,22 @@ class Endboss extends MovableObject {
         if (this.alert) {
             this.playAnimation(this.IMAGES_ALERT);
             this.endbossScreamAnimation();
-            stopBgMusic('game-bg-sound');
-            playBgMusic('boss-bg-sound');
             this.alertImageIndex++;
         }
     }
 
-
-    attackIfNearChar() {
-        this.offset.bottom = 0;
-        if (!this.otherDirection && this.X <= (this.world.character.X + this.world.character.width + 80) && !this.isDead()) {
-            this.playAnimation(this.IMAGES_ATTACK);
-            this.endbossJumpAnimation();
-        } else if (this.otherDirection && ((this.X + this.width) - this.offset.right) >= (this.world.character.X - 80) && !this.isDead()) {
-            this.playAnimation(this.IMAGES_ATTACK);
-            this.endbossJumpAnimation();
+    playBattleSound() {
+        if (this.inBattle) {
+            stopBgMusic('game-bg-sound');
+            playBgMusic('boss-bg-sound');
         }
     }
 
-
     endbossJumpAnimation() {
         if (this.imageIndex == 4 || this.imageIndex == 3) {
-            this.chicken_attack_sound.play();
-            this.attack = true;
+            if (!soundMuted) {
+                this.chicken_attack_sound.play();
+            }
             this.jump();
         }
     }
@@ -145,22 +137,35 @@ class Endboss extends MovableObject {
 
     endbossScreamAnimation() {
         if (this.imageIndex == 6) {
-            this.chicken_alert_sound.play();
+            if (!soundMuted) {
+                this.chicken_alert_sound.play();
+            }
         }
     }
 
 
     moveLeftOrRight() {
-        if (!this.isDead() && !this.isHurt() && !this.otherDirection && !this.alert && !this.attack) {
+        if (!this.isDead() && !this.isHurt() && !this.otherDirection && !this.alert) {
             this.moveLeft();
-        } else if (!this.isDead() && !this.isHurt() && this.otherDirection && !this.alert && !this.attack) {
+        } else if (!this.isDead() && !this.isHurt() && this.otherDirection && !this.alert) {
             this.moveRight();
         }
+    }
+
+
+    checkDirection() {
         if (this.inBattle && !this.isDead()) {
-            this.huntCharacter();
+            this.setOtherDirectionRelativToChar();
             this.setOffsetBottomIfThrowingObject();
         } else {
             this.setOtherDirection(1700, 2590);
+        }
+    }
+
+
+    setStatusbarIfInBattle() {
+        if (this.inBattle) {
+            this.world.statusbarBoss.setPercentage(this.health);
         }
     }
 
@@ -174,15 +179,29 @@ class Endboss extends MovableObject {
 
     attackIfAlertAnimationDone() {
         if (this.alertImageIndex > 14) {
+            this.attack = true;
             this.alert = false;
             this.attackIfNearChar();
             this.speed = 2;
-            this.attack = false;
         }
     }
 
 
-    huntCharacter() {
+    attackIfNearChar() {
+        this.offset.bottom = 0;
+        if (!this.otherDirection && this.X <= (this.world.character.X + this.world.character.width) && !this.isDead()) {
+            this.playAnimation(this.IMAGES_ATTACK);
+            this.endbossJumpAnimation();
+            this.attack = false;
+        } else if (this.otherDirection && ((this.X + this.width) - this.offset.right) >= (this.world.character.X) && !this.isDead()) {
+            this.playAnimation(this.IMAGES_ATTACK);
+            this.endbossJumpAnimation();
+            this.attack = false;
+        } else { this.attack = false }
+    }
+
+
+    setOtherDirectionRelativToChar() {
         if (this.world.character.X > this.X + this.width) {
             this.otherDirection = true;
         } else if (this.world.character.X + this.world.character.width < this.X) {
@@ -194,7 +213,10 @@ class Endboss extends MovableObject {
     ifIsDead() {
         if (this.isDead()) {
             this.playAnimationOnce(this.IMAGES_DEAD);
+            this.inBattle = false;
             stopBgMusic('boss-bg-sound');
+            stopGame();
+            showGameoverScreen();
         }
     }
 
@@ -217,11 +239,15 @@ class Endboss extends MovableObject {
 
 
     playIsHurtSound() {
-        this.chicken_alert_sound.play();
+        if (!soundMuted) {
+            this.chicken_alert_sound.play();
+        }
     }
 
 
     playAlertSound() {
-        this.chicken_alert_sound.play();
+        if (!soundMuted) {
+            this.chicken_alert_sound.play();
+        }
     }
 }

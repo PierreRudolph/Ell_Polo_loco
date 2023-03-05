@@ -44,7 +44,6 @@ class Character extends MovableObject {
     world;
     speed = 5;
     renderLongIdleImages = false;
-    fullscreen = false;
     //---Images----//
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -110,7 +109,6 @@ class Character extends MovableObject {
     ];
 
 
-
     constructor() {
         super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -120,10 +118,11 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.animate();
-        this.applyGravity();
     }
 
+
     animate() {
+        this.applyGravity();
         let keyboardInterval = setInterval(() => {
             this.walking_sound.pause();
             this.ifKeyboardRight();
@@ -137,17 +136,8 @@ class Character extends MovableObject {
             this.animationIfIsDead();
         }, 1000 / 60)
 
-        let animationInterval2 = setInterval(() => { this.animationIfJumping() }, 1000 / 12);
-
-        let animationInterval3 = setInterval(() => {
-            this.animationLongIdleOrIdle();
-        }, 225)
-
-        setInterval(() => {
-            this.ifKeyboardKeyNOrEscape();
-        }, 1000 / 60);
-
-        setInterval(() => { this.ifKeyboardKeyB() }, 1000 / 12);
+        let animationInterval2 = setInterval(() => { this.animationIfJumping(); }, 1000 / 12);
+        let animationInterval3 = setInterval(() => { this.animationLongIdleOrIdle(); }, 225)
 
         intervalIds.push(keyboardInterval);
         intervalIds.push(animationInterval1);
@@ -184,22 +174,6 @@ class Character extends MovableObject {
     }
 
 
-    ifKeyboardKeyNOrEscape() {
-        if (this.world.keyboard.N && this.fullscreen == true || this.world.keyboard.ESCAPE && this.fullscreen == true) {
-            this.fullscreen = false;
-            exitFullscreen();
-        }
-    }
-
-
-    ifKeyboardKeyB() {
-        if (this.world.keyboard.B && this.fullscreen == false) {
-            this.fullscreen = true;
-            fullscreen();
-        }
-    }
-
-
     animationIfWalking() {
         if (!this.isAboveGround()) {
             if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
@@ -223,8 +197,11 @@ class Character extends MovableObject {
     animationIfIsDead() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
-            this.dead_sound.play();
+            if (!soundMuted) {
+                this.dead_sound.play();
+            }
             stopGame();
+            showYouLostScreen();
         }
     }
 
@@ -246,7 +223,9 @@ class Character extends MovableObject {
 
 
     playCharWalkingSound() {
-        this.walking_sound.play();
+        if (!soundMuted) {
+            this.walking_sound.play();
+        }
     }
 
 
@@ -254,18 +233,18 @@ class Character extends MovableObject {
         if (this.currentPlayingHurtSound) {
             if (!this.currentPlayingHurtSound.ended) {//set Time to be sure Audio is ended, before play next jumpSound
                 this.currentPlayingHurtSound.currentTime = 10.000;
+                this.playHurtSound();
             }
-            this.playHurtSound();
-        } else {
-            this.playHurtSound();
-        }
+        } else { this.playHurtSound(); }
     }
 
 
     playHurtSound() {
-        this.currentPlayingHurtSound = new Audio(this.hurt_sounds[this.hurtSoundPathId]);
-        this.currentPlayingHurtSound.play();
-        this.setHurtSoundPathId();
+        if (!soundMuted) {
+            this.currentPlayingHurtSound = new Audio(this.hurt_sounds[this.hurtSoundPathId]);
+            this.currentPlayingHurtSound.play();
+            this.setHurtSoundPathId();
+        }
     }
 
 
@@ -290,9 +269,11 @@ class Character extends MovableObject {
 
 
     playJumpSound() {
-        this.currentPlaying = new Audio(this.jump_sounds[this.jumpSoundPathId]);
-        this.currentPlaying.play();
-        this.setJumpSoundPathId();
+        if (!soundMuted) {
+            this.currentPlaying = new Audio(this.jump_sounds[this.jumpSoundPathId]);
+            this.currentPlaying.play();
+            this.setJumpSoundPathId();
+        }
     }
 
 

@@ -2,6 +2,7 @@ class SmallChicken extends MovableObject {
     height = 50;
     width = 50;
     y = 360;
+    world;
     offset = {
         right: 15,
         left: 10,
@@ -25,18 +26,22 @@ class SmallChicken extends MovableObject {
         this.X = 500 + Math.random() * 500; // Zahl zwischen 200 und 700
         this.speed = 0.15 + Math.random() * 0.35; // Zahl zwischen 0 und 0.25
         this.animate();
+        this.chicken_sound.volume = 0.5;
+        this.chicken_hit_sound.volume = 1;
+
     }
 
     animate() {
-        this.chicken_sound.volume = 0.5;
-        this.chicken_hit_sound.volume = 1;
-        this.playChickenSoundDisplaced();
+
         let animationInterval = setInterval(() => {
+            this.playChickenSoundDisplaced();
             this.animationIfWalking();
             this.actionsIfIsDead();
             this.actionsIfIsHurt();
         }, 250)
-
+        setInterval(() => {
+            this.checkIfSoundMuted();
+        }, 1000 / 30);
         let movingInterval = setInterval(() => {
             this.moveLeftOrRight();
             this.setOtherDirection(100, 1000);
@@ -60,7 +65,7 @@ class SmallChicken extends MovableObject {
 
 
     actionsIfIsHurt() {
-        if (this.isHurt()) {
+        if (this.isHurt() && !soundMuted) {
             this.chicken_hit_sound.play();
         }
     }
@@ -77,7 +82,14 @@ class SmallChicken extends MovableObject {
 
 
     playChickenSoundDisplaced() {
-        this.chicken_sound.start = (0.01 + Math.random() * 0.09);
-        this.chicken_sound.play();
+        if (this.world && this.chicken_sound && !soundMuted) {
+            this.chicken_sound.start = (0.01 + Math.random() * 0.09);
+            this.chicken_sound.play();
+        }
+    }
+    checkIfSoundMuted() {
+        if (soundMuted || gamePaused) {
+            this.chicken_sound.pause();
+        }
     }
 }

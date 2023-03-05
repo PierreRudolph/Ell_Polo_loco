@@ -4,92 +4,142 @@ let world;
 let timeout;
 let keyboard = new Keyboard();
 let intervalIds = [];
+let gamePaused = false;
+let soundMuted = false;
+
+
+function startGame() {
+    init();
+    hideStartScreen();
+    playBgMusic('game-bg-sound');
+    checkIfFullscreen();
+    hideVolumeBtn();
+}
+
+
 function init() {
+    initLevel();
     canvas = document.getElementById('canvas');
+    addCanvasBorderRadius();
+    addCanvasBoxShadow();
     world = new World(canvas, keyboard);
+
+    keyboardActions();
     setLongIdleTimeout();
 }
+
+
+function pauseUnpauseGame() {
+    if (!gamePaused) {
+        stopGame();
+        showPauseScreen();
+        showVolumeBtn();
+    } else if (gamePaused) {
+        hidePauseScreen();
+        restartGame();
+        hideVolumeBtn();
+    }
+}
+
+
+function stopGame() {
+    intervalIds.forEach(clearInterval);
+    document.querySelectorAll('audio').forEach(el => { el.pause() });
+    gamePaused = true;
+    world.gamePaused = true;
+}
+
+
+function restartGame() {
+    if (gamePaused) {
+        world.throwableObjects.forEach(obj => { obj.throw() /*obj.noGravity = false*/ });
+        world.level.enemies.forEach(enemy => { enemy.animate() });
+        world.level.clouds.forEach(cloud => { cloud.animate() });
+        world.character.animate();
+        gamePaused = false;
+        world.gamePaused = false;
+        if (!soundMuted) {
+            playBgMusic('game-bg-sound');
+        }
+    }
+}
+
+
+function muteSound() {
+    let volumeBtn = document.getElementById('volume-btn');
+    if (!soundMuted) {
+        soundMuted = true;
+        volumeBtn.src = 'img/El_Pollo_Loco_icons/mute.png';
+        stopBgMusic('game-bg-sound');
+        stopBgMusic('boss-bg-sound');
+    } else {
+        soundMuted = false;
+        volumeBtn.src = 'img/El_Pollo_Loco_icons/high-volume.png';
+    }
+}
+
 
 function pushIntervalId(intervalId) {
     intervalIds.push(intervalId);
 }
 
-window.addEventListener('keydown', () => {
-    keyboard.ACTIVE = true;
-    resetTimeout();
-})
-
-window.addEventListener('keyup', () => {
-    keyboard.ACTIVE = false
-})
-
 window.addEventListener('keydown', (event) => {
-
-    if (event.code == 'ArrowRight') {
-        keyboard.RIGHT = true;
-    }
-    if (event.code == 'ArrowLeft') {
-        keyboard.LEFT = true;
-    }
-    if (event.code == 'Space') {
-        keyboard.SPACE = true;
-    }
-    if (event.code == 'KeyD') {
-        keyboard.D = true;
-    }
     if (event.code == 'KeyB') {
-        keyboard.B = true;
+        fullscreen();
     }
     if (event.code == 'KeyN') {
-        keyboard.N = true;
+        exitFullscreen();
     }
     if (event.code == 'Escape') {
-        keyboard.ESCAPE = true;
+        exitFullscreen();
+    }
+    if (event.code == 'KeyP') {
+        pauseUnpauseGame();
     }
 })
 
-window.addEventListener('keyup', (event) => {
+function keyboardActions() {
+    window.addEventListener('keydown', (event) => {
+        resetTimeout();
+        if (event.code == 'ArrowRight') {
+            keyboard.RIGHT = true;
+        }
+        if (event.code == 'ArrowLeft') {
+            keyboard.LEFT = true;
+        }
+        if (event.code == 'Space') {
+            keyboard.SPACE = true;
+        }
+        if (event.code == 'KeyD') {
+            keyboard.D = true;
+        }
+    })
 
-    if (event.code == 'ArrowRight') {
-        keyboard.RIGHT = false;
-    }
-    if (event.code == 'ArrowLeft') {
-        keyboard.LEFT = false;
-    }
-    if (event.code == 'ArrowUp') {
-        keyboard.Up = false;
-    }
-    if (event.code == 'ArrowDown') {
-        keyboard.DOWN = false;
-    }
-    if (event.code == 'Space') {
-        keyboard.SPACE = false;
-    }
-    if (event.code == 'KeyD') {
-        keyboard.D = false;
-    }
-    if (event.code == 'KeyB') {
-        keyboard.B = false;
-    }
-    if (event.code == 'KeyN') {
-        keyboard.N = false;
-    }
-    if (event.code == 'Escape') {
-        keyboard.ESCAPE = false;
-    }
-})
-
-function setStoppableInterval(fn, time) {
-    let newInterval = setInterval(fn, time);
-    intervalIds.push(newInterval);
+    window.addEventListener('keyup', (event) => {
+        if (event.code == 'ArrowRight') {
+            keyboard.RIGHT = false;
+        }
+        if (event.code == 'ArrowLeft') {
+            keyboard.LEFT = false;
+        }
+        if (event.code == 'ArrowUp') {
+            keyboard.Up = false;
+        }
+        if (event.code == 'ArrowDown') {
+            keyboard.DOWN = false;
+        }
+        if (event.code == 'Space') {
+            keyboard.SPACE = false;
+        }
+        if (event.code == 'KeyD') {
+            keyboard.D = false;
+        }
+    })
 }
 
-function stopGame() {
-    intervalIds.forEach(clearInterval);
-    document.querySelectorAll('audio').forEach(el => { el.pause() });
-}
 
-function isPlaying(audelem) { return !audelem.paused; }
+function isPaused(audelem) { return audelem.paused; }
+
 
 function setLongIdleTimeout() {
     timeout = setTimeout(() => {
@@ -97,15 +147,17 @@ function setLongIdleTimeout() {
     }, 7000);
 }
 
+
 function resetTimeout() {
     world.character.renderLongIdleImages = false;
     clearTimeout(timeout);
     setLongIdleTimeout();
 }
 
+
 function playBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
-    if (music.paused) {
+    if (isPaused(music) && !soundMuted) {
         music.volume = 0.5;
         music.load();
         music.play();
@@ -114,17 +166,32 @@ function playBgMusic(audioId) {
 
 }
 
+function addCanvasBoxShadow() {
+    canvas.classList.add('canvas-shadow');
+}
+
+function addCanvasBorderRadius() {
+    canvas.classList.add('canvas-border-radius');
+}
+
+function removeCanvasBorderRadius() {
+    canvas.classList.remove('canvas-border-radius');
+}
+
 function stopBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
     music.pause();
 }
+
 
 function fullscreen() {
     let fullscreen = document.getElementById('fullscreen');
     enterFullscreen(fullscreen);
 }
 
+
 function enterFullscreen(element) {
+    removeCanvasBorderRadius();
     if (element.requestFullscreen) {
         element.requestFullscreen();
     } else if (element.msRequestFullscreen) {//for IE 11
@@ -134,11 +201,70 @@ function enterFullscreen(element) {
     }
 }
 
-function exitFullscreen() {
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-    }
 
+function exitFullscreen() {
+    if (checkIfFullscreen()) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+        addCanvasBorderRadius();
+    }
+}
+
+
+function checkIfFullscreen() {
+    if (document.fullscreenElement || document.webkitFullscreenElement ||
+        document.mozFullScreenElement) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+//----SHOW HIDE SCREENS----//
+function showYouLostScreen() {
+    let youLostScreen = document.getElementById('lost-screen');
+    youLostScreen.classList.remove('d-none');
+}
+
+function hideYouLostScreen() {
+    let youLostScreen = document.getElementById('lost-screen');
+    youLostScreen.classList.add('d-none');
+}
+
+function showGameoverScreen() {
+    let gameoverScreen = document.getElementById('gameover-screen');
+    gameoverScreen.classList.remove('d-none');
+}
+
+function hideStartScreen() {
+    let startScreen = document.getElementById('start-screen');
+    startScreen.classList.add('d-none');
+}
+
+function hideGameoverScreen() {
+    let gameoverScreen = document.getElementById('gameover-screen');
+    gameoverScreen.classList.add('d-none');
+}
+
+function showVolumeBtn() {
+    let volumeBtn = document.getElementById('volume-btn');
+    volumeBtn.classList.remove('d-none');
+}
+
+function hideVolumeBtn() {
+    let volumeBtn = document.getElementById('volume-btn');
+    volumeBtn.classList.add('d-none');
+}
+
+function showPauseScreen() {
+    let pauseScreen = document.getElementById('pause-screen');
+    pauseScreen.classList.remove('d-none');
+}
+
+function hidePauseScreen() {
+    let pauseScreen = document.getElementById('pause-screen');
+    pauseScreen.classList.add('d-none');
 }

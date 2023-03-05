@@ -17,13 +17,13 @@
 
     <script src="models/throwable-object.class.js"></script>
 
-
+    <script src="js/game.js"></script>
 
     <script src="models/enemies/chicken.class.js"></script>
     <script src="models/enemies/small_chicken.class.js"></script>
     <script src="models/enemies/endboss.class.js"></script>
 
-    <script src="js/game.js"></script>
+
     <script src="models/coin.class.js"></script>
     <script src="models/bottle.class.js"></script>
     <script src="models/character.class.js"></script>
@@ -42,26 +42,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>El Pollo Loco</title>
 </head>
 
-<body onload="init()">
-    <img class="browser-bg" src="img/background_browser.jpg">
+<body>
+    <div class="content">
+        <img class="browser-bg" src="img/background.png">
 
-    <audio id="game-bg-sound" src="audio/game_bg_sound.mp3"></audio>
-    <audio id="boss-bg-sound" src="audio/boss_chicken_fight_sound.mp3"></audio>
-    <h1>El Pollo Loco</h1>
+        <audio id="game-bg-sound" src="audio/game_bg_sound.mp3"></audio>
+        <audio id="boss-bg-sound" src="audio/boss_chicken_fight_sound.mp3"></audio>
+        <h1>El Pollo Loco</h1>
 
-    <div id="fullscreen" class="fullscreen-div">
-        <canvas id="canvas" width="720px" height="480px">
-        </canvas>
-    </div>
-    <div class="user-help">
-        <span>Right Arrow: Walk Right</span>
-        <span>Left Arrow: Walk Left</span>
-        <span>Space: Jump</span>
-        <span>B: enter Fullscreen</span>
-        <span>N: exit Fullscreen</span>
+        <div id="fullscreen" class="fullscreen-div">
+            <img src="img/El_Pollo_Loco_icons/high-volume.png" class="volume-btn" id="volume-btn" onclick="muteSound()">
+
+            <div id="start-screen" class="start-screen-div">
+                <img src="img/El_Pollo_Loco_icons/play.png" class="play-btn" onclick="startGame()">
+                <img src='img/9_intro_outro_screens/start/startscreen_1.png' class="start-screen">
+            </div>
+
+            <div id="pause-screen" class="pause-screen d-none">
+                <img src="img/El_Pollo_Loco_icons/play.png" class="play-btn" onclick="pauseUnpauseGame()">
+            </div>
+
+            <div id="gameover-screen" class="gameover-screen-div d-none">
+                <img src="img/9_intro_outro_screens/game_over/game over.png" class="gameover-screen">
+            </div>
+
+            <div id="lost-screen" class="lost-screen-div d-none">
+                <img src="img/9_intro_outro_screens/game_over/you lost.png" class="lost-screen">
+            </div>
+
+            <canvas id="canvas" width="720px" height="480px">
+
+            </canvas>
+
+        </div>
+        <div class="user-help">
+            <span>Right Arrow: Walk Right</span>
+            <span>Left Arrow: Walk Left</span>
+            <span>Space: Jump</span>
+            <span>B: enter Fullscreen</span>
+            <span>N: exit Fullscreen</span>
+        </div>
     </div>
 </body>
 

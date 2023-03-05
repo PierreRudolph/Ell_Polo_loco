@@ -5,21 +5,19 @@ class World {
     statusbarBottle = new StatusbarBottle();
     statusbarBoss = new StatusbarBoss();
     throwableObjects = [];
-
     keyboard;
     character = new Character();
     BackgroundObjects = level1.BackgroundObjects;
     currentThrowingObject;
-
     ctx;
     canvas;
-
     camera_x = 0;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+
         this.setWorld();
         this.draw();
         this.run();
@@ -28,31 +26,27 @@ class World {
 
     setWorld() {
         this.character.world = this;
-        this.level.enemies[5].world = this;
         this.statusbarBoss.world = this;
+        this.level.enemies.forEach((enemy) => { enemy.world = this });
     }
 
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
         this.ctx.translate(this.camera_x, 0);
 
         this.addObjectsToMap(this.level.BackgroundObjects);
         this.addObjectsToMap(this.level.clouds);
-
 
         this.ctx.translate(-this.camera_x, 0);
         //---Space for fixed Objects---//
         this.addToMap(this.statusbarHealth);
         this.addToMap(this.statusbarCoin);
         this.addToMap(this.statusbarBottle);
-
         //---Space for fixed Objects---//
         this.ctx.translate(this.camera_x, 0);
 
         this.addToMap(this.statusbarBoss);
-
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
         this.addObjectsToMap(this.throwableObjects);
@@ -80,7 +74,7 @@ class World {
             this.flipImage(model);
         }
         model.draw(this.ctx);
-        model.drawHitbox(this.ctx);
+        //model.drawHitbox(this.ctx);
         if (model.otherDirection) {
             this.flipImageBack(model);
         }
@@ -126,21 +120,18 @@ class World {
 
 
     run() {
-        setInterval(() => {
-            this.playGameBgSoundIfUserAction();
-            this.checkThrowObjects();
-
-        }, 225);
         this.drawCoinPyramid();
         setInterval(() => {
-            this.checkCollisions();
             this.checkIfObjectOutOfWorld();
+            this.checkCollisions();
+            this.checkThrowObjects();
+            this.checkThrowingObjCollisions();
         }, 1000 / 60);
     }
 
 
     checkThrowObjects() {
-        if (this.keyboard.D /*&& this.character.collected_bottles.length > 0*/) {
+        if (this.keyboard.D && !this.currentThrowingObject && !gamePaused /*&& this.character.collected_bottles.length > 0*/) {
             let positionX = this.checkThrowDirection();
             this.generateNewThrowingObject(positionX);
             this.character.collected_bottles.splice(0, 1);
@@ -151,7 +142,8 @@ class World {
 
     generateNewThrowingObject(positionX) {
         this.currentThrowingObject = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
-        this.throwableObjects.push(this.currentThrowingObject);
+        this.throwableObjects.splice(-1, 0, this.currentThrowingObject);
+        setTimeout(() => { this.currentThrowingObject = ''; }, 350);
     }
 
 
@@ -168,7 +160,7 @@ class World {
     checkCollisions() {
         this.level.enemies.forEach(enemy => {
             this.checkCharCollisions(enemy);
-            this.checkThrowingObjCollisions(enemy);
+            //this.checkThrowingObjCollisions(enemy);
         });
         this.collectBottleIfColliding();
     }
@@ -190,33 +182,57 @@ class World {
     }
 
 
-    checkThrowingObjCollisions(enemy) {
+    /*checkThrowingObjCollisions(enemy) {
         if (this.throwableObjects.length > 0) {
             this.throwableObjects.forEach(obj => {
                 if (obj.isColliding(enemy)) {
-                    obj.colliding = true;
+                    obj.noGravity = true;//throwableObject bekommt noGravity = true, wenn es kollidiert.
                     if (!enemy.isHurt()) {
                         enemy.hit();
                     }
                 }
             })
         }
-    }
+    }*/
 
 
-    checkIfObjectOutOfWorld() {
+    checkThrowingObjCollisions() {
         if (this.throwableObjects.length > 0) {
-            for (let i = 0; i < this.throwableObjects.length; i++) {
-                const object = this.throwableObjects[i];
-                if (object.colliding) {
-                    setTimeout(() => { this.throwableObjects.splice(i, 1); }, 300);
-                }
-                if (object.y > 430) {
-                    clearInterval(this.throwableObjects[i].throwInterval);
-                    this.throwableObjects.splice(i, 1);
+
+            for (let i = 0; i < this.level.enemies.length; i++) {
+                const enemy = this.level.enemies[i];
+
+                for (let b =
+                    0; b < this.throwableObjects.length; b++) {
+                    const obj = this.throwableObjects[b];
+                    this.checkIfObjectOutOfWorld(obj, b);
+                    if (obj.isColliding(enemy)) {
+                        obj.noGravity = true;//throwableObject bekommt noGravity = true, wenn es kollidiert.
+                        if (!enemy.isHurt()) {
+                            enemy.hit();
+                        }
+                        this.throwableObjects.splice(b, 1);
+                        //this.spliceObjFromArray();
+                    }
                 }
             }
         }
+    }
+
+
+    checkIfObjectOutOfWorld(object, b) {
+        if (object) {
+            if (object.y > 480) {
+                this.throwableObjects.splice(b, 1);
+            }
+        }
+    }
+
+
+    spliceObjFromArray() {
+        setTimeout(() => {
+            this.throwableObjects.splice(b, 1);
+        }, 200);
     }
 
 
@@ -233,21 +249,18 @@ class World {
 
     pushCollectable(collectable) {
         if (collectable.name == 'Coin') {
-            collectable.collectSound.play();
+            if (!soundMuted) {
+                collectable.collectSound.play();
+            }
             this.character.collected_coins.push(collectable);
             this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20);
         }
         if (collectable.name == 'Bottle') {
-            collectable.collectSound.play();
+            if (!soundMuted) {
+                collectable.collectSound.play();
+            }
             this.character.collected_bottles.push(collectable);
             this.statusbarBottle.setPercentage(this.statusbarBottle.percentage += 20);
-        }
-    }
-
-
-    playGameBgSoundIfUserAction() {
-        if (this.keyboard.RIGHT && !this.level.enemies[5].inBattle) {
-            playBgMusic('game-bg-sound');
         }
     }
 }

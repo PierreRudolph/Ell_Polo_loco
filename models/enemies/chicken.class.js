@@ -2,11 +2,12 @@ class Chicken extends MovableObject {
     height = 70;
     width = 100;
     y = 345;
+    world;
     offset = {
-        right: 30,
-        left: 10,
-        top: 20,
-        bottom: 40
+        right: 0,
+        left: 0,
+        top: 15,
+        bottom: 15
     }
     chicken_sound = new Audio('audio/chicken_normal.mp3');
     chicken_hit_sound = new Audio('audio/chicken_hit.mp3');
@@ -17,9 +18,7 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
     ];
 
-
     IMAGE_DEAD = 'img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
-
 
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
@@ -28,12 +27,18 @@ class Chicken extends MovableObject {
         this.speed = 0.15 + Math.random() * 0.35; // Zahl zwischen 0 und 0.25
         this.animate();
         this.chicken_sound.volume = 0.1;
-        this.chicken_hit_sound.volume = 0.2;
+        this.chicken_hit_sound.volume = 0.4;
+
     }
 
+    pauseAudioIfGameOver() {
+        this.chicken_sound.pause();
+    }
 
     animate() {
+
         let animationInterval = setInterval(() => {
+            this.playChickenSoundDisplaced();
             this.animationIfIdle();
             this.animationIfIsHurt();
             this.animationIfIsDead();
@@ -44,7 +49,9 @@ class Chicken extends MovableObject {
             this.moveRightIfTrue();
             this.setOtherDirection(100, 2200);
         }, 1000 / 60);
-
+        setInterval(() => {
+            this.checkIfSoundMuted();
+        }, 1000 / 30);
         pushIntervalId(animationInterval);
         pushIntervalId(movingInterval);
     }
@@ -53,13 +60,13 @@ class Chicken extends MovableObject {
     animationIfIdle() {
         if (!this.isDead() && !this.isHurt()) {
             this.playAnimation(this.IMAGES_WALKING);
-            this.playChickenSoundDisplaced();
+
         }
     }
 
 
     animationIfIsHurt() {
-        if (this.isHurt()) {
+        if (this.isHurt() && !soundMuted) {
             this.chicken_hit_sound.play();
         }
     }
@@ -84,7 +91,15 @@ class Chicken extends MovableObject {
         }
     }
     playChickenSoundDisplaced() {
-        this.chicken_sound.start = 0.01 + Math.random() * 0.07;
-        this.chicken_sound.play();
+        if (this.world && this.chicken_sound && !soundMuted) {
+            this.chicken_sound.start = 0.01 + Math.random() * 0.07;
+            this.chicken_sound.play();
+        }
+    }
+
+    checkIfSoundMuted() {
+        if (soundMuted || gamePaused) {
+            this.chicken_sound.pause();
+        }
     }
 }
