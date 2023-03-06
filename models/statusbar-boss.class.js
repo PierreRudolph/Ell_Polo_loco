@@ -14,7 +14,7 @@ class StatusbarBoss extends DrawableObject {
 
     constructor() {
         super();
-        this.loadImages(this.IMAGES);
+        this.loadImageCache(this.IMAGES);
         this.setPercentage(100);
         this.X = 600;
         this.y = 0;

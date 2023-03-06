@@ -7,12 +7,20 @@ class DrawableObject {
     height = 150;
     width = 100;
 
+    loadImage(path) {
+        this.img = totalImageCache[path];
+    }
+    loadImageCache(arr) {
+        arr.forEach((path) => {
+            this.imageCache[path] = totalImageCache[path];
+        });
+    }
 
-    //loadImage('img/test.png);
+    /*
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
-    }
+    }*/
 
     draw(ctx) {
         ctx.drawImage(this.img, this.X, this.y, this.width, this.height);
@@ -21,13 +29,14 @@ class DrawableObject {
     /**
      * @param {Array} arr - ['img/image1.png','img/image2.png'...] 
      */
+    /*
     loadImages(arr) {
         arr.forEach(path => {
             let img = new Image();
             img.src = path;
             this.imageCache[path] = img;
         });
-    }
+    }*/
 
 
     drawHitbox(ctx) {

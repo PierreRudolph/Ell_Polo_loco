@@ -6,7 +6,64 @@ let keyboard = new Keyboard();
 let intervalIds = [];
 let gamePaused = false;
 let soundMuted = false;
+let totalImageCache = {};
+let allImagesPaths = [
+    characterImagePaths,
+    chickenImagePaths,
+    smallChickenImagePaths,
+    endbossImagePaths,
+    bottleImagePath,
+    cloudImagePaths,
+    coinImagePaths,
+    statusbarBossImagePaths,
+    statusbarBottleImagePaths,
+    statusbarCoinImagePaths,
+    statusbarHealthImagePaths,
+    throwableObjectImagePaths,
+    AIR,
+    THIRD_LAYERV2,
+    SECOND_LAYERV2,
+    FIRST_LAYERV2,
+    THIRD_LAYERV1,
+    SECOND_LAYERV1,
+    FIRST_LAYERV1
+];
 
+async function loadAllImagesToCache() {
+    for (let i = 0; i < allImagesPaths.length; i++) {
+        await loadImagesListToCache(allImagesPaths[i]);
+    }
+}
+async function loadImagesListToCache(listList) {
+    for (let i = 0; i < listList.length; i++) {
+        const singleList = listList[i];
+        for (let j = 0; j < singleList.length; j++) {
+            const path = singleList[j];
+            try {
+                const img = await loadSingleImage(path);
+                totalImageCache[path] = img;
+            } catch (e) {
+                console.log(path)
+                console.log(e)
+            }
+        }
+        //increaseCacheLoadingCounter();
+    }
+}
+
+const loadSingleImage = path => {
+    return new Promise((resolve, reject) => {
+        const img = new Image()
+        img.crossOrigin = 'Anonymous' // to avoid CORS if used with Canvas
+        img.src = path
+        img.onload = () => {
+            resolve(img)
+        }
+        img.onerror = e => {
+            reject(e)
+        }
+    })
+}
 
 function startGame() {
     playSound();
@@ -17,13 +74,20 @@ function startGame() {
     hideVolumeBtn();
 }
 
+async function awaitLoadingWorld() {
+    showLoadingScreen();
+    await loadAllImagesToCache();
+    hideLoadingScreen();
+}
+
 
 function init() {
     initLevel();
     canvas = document.getElementById('canvas');
+    world = new World(canvas, keyboard);
     addCanvasBorderRadius();
     addCanvasBoxShadow();
-    world = new World(canvas, keyboard);
+
 
     keyboardActions();
     bindBtsPressEvents();
@@ -57,6 +121,7 @@ function restartGame() {
     startGame();
     hideYouLostScreen();
     hideGameoverScreen();
+    hidePauseScreen();
 }
 
 function continueGame() {
@@ -72,6 +137,15 @@ function continueGame() {
     }
 }
 
+function showLoadingScreen() {
+    let loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.classList.remove('d-none')
+}
+
+function hideLoadingScreen() {
+    let loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.classList.add('d-none')
+}
 
 function muteSound() {
     let volumeBtn = document.getElementById('volume-btn');
@@ -294,6 +368,7 @@ function showGameoverScreen() {
     gameoverScreen.classList.remove('d-none');
 }
 
+
 function hideStartScreen() {
     let startScreen = document.getElementById('start-screen');
     startScreen.classList.add('d-none');
@@ -323,3 +398,10 @@ function hidePauseScreen() {
     let pauseScreen = document.getElementById('pause-screen');
     pauseScreen.classList.add('d-none');
 }
+
+
+
+
+
+
+

@@ -114,12 +114,12 @@ class Character extends MovableObject {
 
     constructor() {
         super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
-        this.loadImages(this.IMAGES_WALKING);
-        this.loadImages(this.IMAGES_JUMPING);
-        this.loadImages(this.IMAGES_IDLE);
-        this.loadImages(this.IMAGES_LONG_IDLE);
-        this.loadImages(this.IMAGES_HURT);
-        this.loadImages(this.IMAGES_DEAD);
+        this.loadImageCache(this.IMAGES_WALKING);
+        this.loadImageCache(this.IMAGES_JUMPING);
+        this.loadImageCache(this.IMAGES_IDLE);
+        this.loadImageCache(this.IMAGES_LONG_IDLE);
+        this.loadImageCache(this.IMAGES_HURT);
+        this.loadImageCache(this.IMAGES_DEAD);
         this.animate();
     }
 

@@ -7,4 +7,6 @@ class BackgroundObject extends MovableObject {
         this.X = X;
         this.y = 480 - this.height;
     }
+
+
 }
