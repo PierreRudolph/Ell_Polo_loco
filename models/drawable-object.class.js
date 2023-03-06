@@ -6,12 +6,7 @@ class DrawableObject {
     y = 280;
     height = 150;
     width = 100;
-    /*offset = {
-        right: 0,
-        left: 0,
-        top: 0,
-        bottom: 0
-    }*/
+
 
     //loadImage('img/test.png);
     loadImage(path) {
@@ -33,6 +28,7 @@ class DrawableObject {
             this.imageCache[path] = img;
         });
     }
+
 
     drawHitbox(ctx) {
         if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken ||

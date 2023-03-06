@@ -110,6 +110,8 @@ h1 {
 
 canvas {
     display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .canvas-border-radius {
@@ -141,8 +143,121 @@ canvas {
     align-items: center;
     background-color: #f6ad7e;
     border-radius: 16px;
+    letter-spacing: 0.5px;
 }
 
 .d-none {
     display: none;
+}
+
+.touch-interface {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+.arrow-left {
+    width: 45px;
+    position: absolute;
+    bottom: 20px;
+    left: 25px;
+}
+
+.arrow-right {
+    width: 45px;
+    position: absolute;
+    bottom: 20px;
+    left: 100px;
+}
+
+.throw-icon {
+    width: 45px;
+    position: absolute;
+    bottom: 20px;
+    right: 100px;
+}
+
+.jump-icon {
+    width: 45px;
+    position: absolute;
+    bottom: 20px;
+    right: 25px
+}
+
+@media only screen and (max-width:720px) {
+    .fullscreen-div {
+        width: 100%;
+        border-radius: 0px;
+    }
+
+    .user-help {
+        display: none;
+    }
+
+    .canvas-border-radius {
+        border-radius: 0px;
+    }
+
+    .lost-screen {
+        border-radius: 0px;
+    }
+
+    .start-screen {
+        border-radius: 0px;
+    }
+
+    .pause-screen {
+        border-radius: 0px;
+    }
+
+    .gameover-screen {
+        border-radius: 0px;
+    }
+}
+
+@media only screen and (max-height:900px) {
+    .content {
+        justify-content: center;
+    }
+
+    .fullscreen-div {
+        margin: 0px;
+    }
+}
+
+@media only screen and (max-height:700px) {
+    h1 {
+        display: none;
+    }
+}
+
+@media only screen and (max-height:600px) {
+    .user-help {
+        display: none;
+    }
+}
+
+@media only screen and (max-height:480px) {
+    .fullscreen-div {
+        height: 100vh;
+        margin: 0px;
+    }
+
+    .canvas-border-radius {
+        border-radius: 0px;
+    }
+
+    .lost-screen {
+        border-radius: 0px;
+    }
+
+    .start-screen {
+        border-radius: 0px;
+    }
+
+    .pause-screen {
+        border-radius: 0px;
+    }
 }

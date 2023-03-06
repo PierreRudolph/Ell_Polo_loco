@@ -10,6 +10,7 @@ class MovableObject extends DrawableObject {
     inBattle = false;
     noGravity = false;
 
+
     applyGravity(noGravity) {
         let gravityInterval = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
@@ -38,12 +39,14 @@ class MovableObject extends DrawableObject {
         }
     }
 
+
     playAnimation(images) {
         this.imageIndex = this.currentImage % images.length;//iteriert durch Array,(% ist eine undendliche schleife)
         let path = images[this.imageIndex];
         this.img = this.imageCache[path];
         this.currentImage++;
     }
+
 
     playAnimationOnce(images) {
         for (let i = 0; i < images.length; i++) {
@@ -52,6 +55,7 @@ class MovableObject extends DrawableObject {
             this.currentImage++;
         }
     }
+
 
     moveRight() {
         this.X += this.speed;
@@ -116,15 +120,6 @@ class MovableObject extends DrawableObject {
         }
     }
 
-    // Bessere Formel zur Kollisionsberechnung (Genauer)
-    /*isColliding(obj) {
-        if (!obj.health <= 0) {
-            return (this.X + this.width - this.offset.right) > obj.X + obj.offset.left &&
-                this.X + this.offset.left < (obj.X + obj.width - obj.offset.right) &&
-                (this.y + this.height - this.offset.bottom) > obj.y + obj.offset.top &&
-                (this.y + this.offset.top) < (obj.y + obj.height - obj.offset.bottom);
-        }
-    }*/
 
     isColliding(obj) {
         if (!obj.health <= 0) {
@@ -135,15 +130,3 @@ class MovableObject extends DrawableObject {
         }
     }
 }
-
-/*isColliding(obj) {
-    return (this.X + this.width) >= obj.X &&
-        this.X <= (obj.X + obj.width) &&
-        (this.y + this.height) >= obj.y &&
-        (this.y) <= (obj.y + obj.height);
-}*/
-    //&&
-    //obj.onCollisionCourse;
-    // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt.
-    //Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
-

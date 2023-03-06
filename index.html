@@ -56,6 +56,13 @@
         <div id="fullscreen" class="fullscreen-div">
             <img src="img/El_Pollo_Loco_icons/high-volume.png" class="volume-btn" id="volume-btn" onclick="muteSound()">
 
+            <div class="touch-interface" id="touch-interface">
+                <img src="img/arrow_left.png" class="arrow-left" id="arrow-left">
+                <img src="img/arrow_right.png" class="arrow-right" id="arrow-right">
+                <img src="img/throw.png" class="throw-icon" id="throw-icon">
+                <img src="img/jump.png" class="jump-icon" id="jump-icon">
+            </div>
+
             <div id="start-screen" class="start-screen-div">
                 <img src="img/El_Pollo_Loco_icons/play.png" class="play-btn" onclick="startGame()">
                 <img src='img/9_intro_outro_screens/start/startscreen_1.png' class="start-screen">
@@ -66,10 +73,12 @@
             </div>
 
             <div id="gameover-screen" class="gameover-screen-div d-none">
+                <img src="img/El_Pollo_Loco_icons/reload.png" class="play-btn" onclick="restartGame()">
                 <img src="img/9_intro_outro_screens/game_over/game over.png" class="gameover-screen">
             </div>
 
             <div id="lost-screen" class="lost-screen-div d-none">
+                <img src="img/El_Pollo_Loco_icons/reload.png" class="play-btn" onclick="restartGame()">
                 <img src="img/9_intro_outro_screens/game_over/you lost.png" class="lost-screen">
             </div>
 
@@ -78,6 +87,7 @@
             </canvas>
 
         </div>
+
         <div class="user-help">
             <span>Right Arrow: Walk Right</span>
             <span>Left Arrow: Walk Left</span>
@@ -85,6 +95,7 @@
             <span>B: enter Fullscreen</span>
             <span>N: exit Fullscreen</span>
         </div>
+
     </div>
 </body>
 

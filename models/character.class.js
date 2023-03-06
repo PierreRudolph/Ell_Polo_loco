@@ -11,32 +11,7 @@ class Character extends MovableObject {
         top: 80,
         bottom: 40
     }
-    //-----Sounds------//
-    dead_sound = new Audio('audio/char_sounds/char_dying.mp3');
-    walking_sound = new Audio('audio/char_sounds/walking_fast_char.mp3');
-    jumpSoundPathId = 0;
-    hurtSoundPathId = 0;
-    currentPlaying;
-    currentPlayingHurtSound;
-    jump_sounds = [
-        'audio/char_sounds/char_jump/jump_1.mp3',
-        'audio/char_sounds/char_jump/jump_2.mp3',
-        'audio/char_sounds/char_jump/jump_3.mp3',
-        'audio/char_sounds/char_jump/jump_4.mp3',
-        'audio/char_sounds/char_jump/jump_5.mp3',
-        'audio/char_sounds/char_jump/jump_6.mp3',
-        'audio/char_sounds/char_jump/jump_7.mp3',
-        'audio/char_sounds/char_jump/jump_8.mp3',
-        'audio/char_sounds/char_jump/jump_9.mp3',
-        'audio/char_sounds/char_jump/jump_10.mp3'
-    ];
 
-    hurt_sounds = [
-        'audio/char_sounds/char_hurt/char_hurt_1.mp3',
-        'audio/char_sounds/char_hurt/char_hurt_2.mp3',
-        'audio/char_sounds/char_hurt/char_hurt_3.mp3',
-        'audio/char_sounds/char_hurt/char_hurt_4.mp3'
-    ]
     //-----Collectables-----//
     collected_bottles = [];
     collected_coins = [];
@@ -107,6 +82,34 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-56.png',
         'img/2_character_pepe/5_dead/D-57.png'
     ];
+
+    //-----Sounds------//
+    dead_sound = new Audio('audio/char_sounds/char_dying.mp3');
+    walking_sound = new Audio('audio/char_sounds/walking_fast_char.mp3');
+    jumpSoundPathId = 0;
+    hurtSoundPathId = 0;
+    currentPlaying;
+    currentPlayingHurtSound;
+
+    jump_sounds = [
+        'audio/char_sounds/char_jump/jump_1.mp3',
+        'audio/char_sounds/char_jump/jump_2.mp3',
+        'audio/char_sounds/char_jump/jump_3.mp3',
+        'audio/char_sounds/char_jump/jump_4.mp3',
+        'audio/char_sounds/char_jump/jump_5.mp3',
+        'audio/char_sounds/char_jump/jump_6.mp3',
+        'audio/char_sounds/char_jump/jump_7.mp3',
+        'audio/char_sounds/char_jump/jump_8.mp3',
+        'audio/char_sounds/char_jump/jump_9.mp3',
+        'audio/char_sounds/char_jump/jump_10.mp3'
+    ];
+
+    hurt_sounds = [
+        'audio/char_sounds/char_hurt/char_hurt_1.mp3',
+        'audio/char_sounds/char_hurt/char_hurt_2.mp3',
+        'audio/char_sounds/char_hurt/char_hurt_3.mp3',
+        'audio/char_sounds/char_hurt/char_hurt_4.mp3'
+    ]
 
 
     constructor() {

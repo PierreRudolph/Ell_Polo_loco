@@ -9,6 +9,7 @@ let soundMuted = false;
 
 
 function startGame() {
+    playSound();
     init();
     hideStartScreen();
     playBgMusic('game-bg-sound');
@@ -25,18 +26,21 @@ function init() {
     world = new World(canvas, keyboard);
 
     keyboardActions();
+    bindBtsPressEvents();
     setLongIdleTimeout();
 }
 
 
 function pauseUnpauseGame() {
     if (!gamePaused) {
+        playSound();
         stopGame();
         showPauseScreen();
         showVolumeBtn();
     } else if (gamePaused) {
+        playSound();
         hidePauseScreen();
-        restartGame();
+        continueGame();
         hideVolumeBtn();
     }
 }
@@ -46,18 +50,22 @@ function stopGame() {
     intervalIds.forEach(clearInterval);
     document.querySelectorAll('audio').forEach(el => { el.pause() });
     gamePaused = true;
-    world.gamePaused = true;
 }
 
-
 function restartGame() {
+    gamePaused = false;
+    startGame();
+    hideYouLostScreen();
+    hideGameoverScreen();
+}
+
+function continueGame() {
     if (gamePaused) {
         world.throwableObjects.forEach(obj => { obj.throw() /*obj.noGravity = false*/ });
         world.level.enemies.forEach(enemy => { enemy.animate() });
         world.level.clouds.forEach(cloud => { cloud.animate() });
         world.character.animate();
         gamePaused = false;
-        world.gamePaused = false;
         if (!soundMuted) {
             playBgMusic('game-bg-sound');
         }
@@ -68,11 +76,13 @@ function restartGame() {
 function muteSound() {
     let volumeBtn = document.getElementById('volume-btn');
     if (!soundMuted) {
+        playSound();
         soundMuted = true;
         volumeBtn.src = 'img/El_Pollo_Loco_icons/mute.png';
         stopBgMusic('game-bg-sound');
         stopBgMusic('boss-bg-sound');
     } else {
+        playSound();
         soundMuted = false;
         volumeBtn.src = 'img/El_Pollo_Loco_icons/high-volume.png';
     }
@@ -112,6 +122,7 @@ function keyboardActions() {
         }
         if (event.code == 'KeyD') {
             keyboard.D = true;
+            world.checkThrowObjects();
         }
     })
 
@@ -137,6 +148,41 @@ function keyboardActions() {
     })
 }
 
+function bindBtsPressEvents() {
+    document.getElementById('arrow-left').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = true;
+    })
+    document.getElementById('arrow-left').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = false;
+    })
+    document.getElementById('arrow-right').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = true;
+    })
+    document.getElementById('arrow-right').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = false;
+    })
+    document.getElementById('throw-icon').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.D = true;
+        world.checkThrowObjects();
+    })
+    document.getElementById('throw-icon').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.D = false;
+    })
+    document.getElementById('jump-icon').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = true;
+    })
+    document.getElementById('jump-icon').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = false;
+    })
+}
 
 function isPaused(audelem) { return audelem.paused; }
 
@@ -187,6 +233,7 @@ function stopBgMusic(audioId) {
 function fullscreen() {
     let fullscreen = document.getElementById('fullscreen');
     enterFullscreen(fullscreen);
+    playSound();
 }
 
 
@@ -209,6 +256,7 @@ function exitFullscreen() {
         } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
         }
+        playSound();
         addCanvasBorderRadius();
     }
 }
@@ -221,6 +269,13 @@ function checkIfFullscreen() {
     } else {
         return 0;
     }
+}
+
+function playSound() {
+    let sound = new Audio('audio/click_sound.mp3');
+    sound.load();
+    sound.volume = 0.5;
+    sound.play();
 }
 
 //----SHOW HIDE SCREENS----//

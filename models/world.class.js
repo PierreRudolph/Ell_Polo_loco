@@ -13,6 +13,7 @@ class World {
     canvas;
     camera_x = 0;
 
+
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -27,7 +28,7 @@ class World {
     setWorld() {
         this.character.world = this;
         this.statusbarBoss.world = this;
-        this.level.enemies.forEach((enemy) => { enemy.world = this });
+        this.level.enemies[5].world = this;
     }
 
 
@@ -124,14 +125,14 @@ class World {
         setInterval(() => {
             this.checkIfObjectOutOfWorld();
             this.checkCollisions();
-            this.checkThrowObjects();
             this.checkThrowingObjCollisions();
+            this.collectBottleIfColliding();
         }, 1000 / 60);
     }
 
 
     checkThrowObjects() {
-        if (this.keyboard.D && !this.currentThrowingObject && !gamePaused /*&& this.character.collected_bottles.length > 0*/) {
+        if (!this.currentThrowingObject && !gamePaused /*&& this.character.collected_bottles.length > 0*/) {
             let positionX = this.checkThrowDirection();
             this.generateNewThrowingObject(positionX);
             this.character.collected_bottles.splice(0, 1);
@@ -142,8 +143,8 @@ class World {
 
     generateNewThrowingObject(positionX) {
         this.currentThrowingObject = new ThrowableObject(positionX, this.character.y + 90, this.character.otherDirection);
-        this.throwableObjects.splice(-1, 0, this.currentThrowingObject);
-        setTimeout(() => { this.currentThrowingObject = ''; }, 350);
+        this.throwableObjects.splice(-1, 0, this.currentThrowingObject); //fügt array object hinzu,(-1=ende des array(array.length))
+        this.currentThrowingObject = '';
     }
 
 
@@ -160,9 +161,7 @@ class World {
     checkCollisions() {
         this.level.enemies.forEach(enemy => {
             this.checkCharCollisions(enemy);
-            //this.checkThrowingObjCollisions(enemy);
         });
-        this.collectBottleIfColliding();
     }
 
 
@@ -182,28 +181,13 @@ class World {
     }
 
 
-    /*checkThrowingObjCollisions(enemy) {
-        if (this.throwableObjects.length > 0) {
-            this.throwableObjects.forEach(obj => {
-                if (obj.isColliding(enemy)) {
-                    obj.noGravity = true;//throwableObject bekommt noGravity = true, wenn es kollidiert.
-                    if (!enemy.isHurt()) {
-                        enemy.hit();
-                    }
-                }
-            })
-        }
-    }*/
-
-
     checkThrowingObjCollisions() {
         if (this.throwableObjects.length > 0) {
 
             for (let i = 0; i < this.level.enemies.length; i++) {
                 const enemy = this.level.enemies[i];
 
-                for (let b =
-                    0; b < this.throwableObjects.length; b++) {
+                for (let b = 0; b < this.throwableObjects.length; b++) {
                     const obj = this.throwableObjects[b];
                     this.checkIfObjectOutOfWorld(obj, b);
                     if (obj.isColliding(enemy)) {
@@ -211,8 +195,9 @@ class World {
                         if (!enemy.isHurt()) {
                             enemy.hit();
                         }
-                        this.throwableObjects.splice(b, 1);
-                        //this.spliceObjFromArray();
+                        setTimeout(() => {
+                            this.spliceObjFromArray(this.throwableObjects, b)
+                        }, 150);
                     }
                 }
             }
@@ -229,10 +214,8 @@ class World {
     }
 
 
-    spliceObjFromArray() {
-        setTimeout(() => {
-            this.throwableObjects.splice(b, 1);
-        }, 200);
+    spliceObjFromArray(array, position) {
+        array.splice(position, 1);
     }
 
 
@@ -240,27 +223,30 @@ class World {
         for (let i = 0; i < this.level.collectables.length; i++) {
             const collectable = this.level.collectables[i];
             if (this.character.isColliding(collectable) && this.character.collected_bottles.length <= 4) {
-                this.pushCollectable(collectable);
-                this.level.collectables.splice(i, 1);
+                if (collectable instanceof Coin) {
+                    this.pushCollectedCoin(collectable);
+                } else if (collectable instanceof Bottle) {
+                    this.pushCollectedBottle(collectable)
+                }
+                this.spliceObjFromArray(this.level.collectables, i);
             }
         }
     }
 
+    pushCollectedBottle(collectable) {
+        if (!soundMuted) {
+            collectable.collectSound.play();
+        }
+        this.character.collected_bottles.push(collectable);
+        this.statusbarBottle.setPercentage(this.statusbarBottle.percentage += 20);
+    }
 
-    pushCollectable(collectable) {
-        if (collectable.name == 'Coin') {
-            if (!soundMuted) {
-                collectable.collectSound.play();
-            }
-            this.character.collected_coins.push(collectable);
-            this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20);
+
+    pushCollectedCoin(collectable) {
+        if (!soundMuted) {
+            collectable.collectSound.play();
         }
-        if (collectable.name == 'Bottle') {
-            if (!soundMuted) {
-                collectable.collectSound.play();
-            }
-            this.character.collected_bottles.push(collectable);
-            this.statusbarBottle.setPercentage(this.statusbarBottle.percentage += 20);
-        }
+        this.character.collected_coins.push(collectable);
+        this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20);
     }
 }
