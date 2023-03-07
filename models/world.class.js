@@ -132,7 +132,7 @@ class World {
 
 
     checkThrowObjects() {
-        if (!this.currentThrowingObject && !gamePaused /*&& this.character.collected_bottles.length > 0*/) {
+        if (!this.currentThrowingObject && !gamePaused && this.character.collected_bottles.length > 0) {
             let positionX = this.checkThrowDirection();
             this.generateNewThrowingObject(positionX);
             this.character.collected_bottles.splice(0, 1);
@@ -232,6 +232,7 @@ class World {
             }
         }
     }
+
 
     pushCollectedBottle(collectable) {
         if (!soundMuted) {

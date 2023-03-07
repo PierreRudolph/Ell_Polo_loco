@@ -47,6 +47,7 @@ async function loadImagesListToCache(listList) {
     }
 }
 
+
 const loadSingleImage = path => {
     return new Promise((resolve, reject) => {
         const img = new Image()

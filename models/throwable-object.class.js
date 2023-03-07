@@ -2,7 +2,6 @@ class ThrowableObject extends MovableObject {
     speed = 15;
     splashSound = new Audio('audio/glass_smash.mp3');
     throwSound = new Audio('audio/woosh.mp3');
-    throwInterval;
 
     offset = {
         right: 10,
@@ -50,7 +49,7 @@ class ThrowableObject extends MovableObject {
             this.throwSound.play();
         }
 
-        this.throwInterval = setInterval(() => {
+        let throwInterval = setInterval(() => {
             if (!this.noGravity) {
                 this.playAnimation(this.IMAGES_ROTATION);
                 this.setObjectThrowingDirection(otherDirection);
@@ -58,13 +57,13 @@ class ThrowableObject extends MovableObject {
                 this.applyGravity(this.noGravity);
                 //this.correctLandingPoint(otherDirection);
                 setInterval(() => { this.playAnimation(this.IMAGES_SPLASH); }, 50);
-                clearInterval(this.throwInterval);
+                clearInterval(throwInterval);
                 if (!soundMuted) {
                     this.splashSound.play();
                 }
             }
         }, 25);
-        pushIntervalId(this.throwInterval);
+        pushIntervalId(throwInterval);
     }
 
 

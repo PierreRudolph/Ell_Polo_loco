@@ -74,6 +74,40 @@ body {
     border-radius: 20px;
 }
 
+.keybindings-screen {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: #f6ad7e;
+    font-size: 30px;
+    letter-spacing: 2px;
+    padding-left: 100px;
+}
+
+.info-screen {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+    background-color: #f6ad7e;
+    font-size: 17px;
+    letter-spacing: 2px;
+    padding-left: 100px;
+}
+
 .fullscreen-icon {
     cursor: pointer;
     width: 45px;
@@ -81,6 +115,36 @@ body {
     right: 20px;
     bottom: 20px;
     z-index: 1;
+}
+
+.keyboard-btn {
+    cursor: pointer;
+    position: absolute;
+    right: 100px;
+    top: 20px;
+    width: 45px;
+}
+
+.explanation-text {
+    text-decoration: underline;
+}
+
+.info-screen a {
+    text-decoration: none;
+    color: black;
+    margin-top: 3px;
+}
+
+.info-screen a:hover {
+    color: grey;
+}
+
+.info-btn {
+    cursor: pointer;
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width: 45px;
 }
 
 .volume-btn {

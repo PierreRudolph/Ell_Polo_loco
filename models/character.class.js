@@ -205,6 +205,7 @@ class Character extends MovableObject {
             }
             stopGame();
             showYouLostScreen();
+            gameOver = true;
         }
     }
 

@@ -6,7 +6,7 @@ let keyboard = new Keyboard();
 let intervalIds = [];
 let gamePaused = false;
 let soundMuted = false;
-
+let gameOver = false;
 
 
 function startGame() {
@@ -45,7 +45,7 @@ function pauseUnpauseGame() {
         showPauseScreen();
         showVolumeBtn();
         showFullscreenBtn();
-    } else if (gamePaused) {
+    } else if (gamePaused && !gameOver) {
         playSound();
         hidePauseScreen();
         continueGame();
@@ -266,14 +266,14 @@ function checkIfFullscreen() {
 
 function setEnterFullscreenIcon() {
     let fullscreenIcon = document.getElementById('fullscreen-icon');
-    fullscreenIcon.src = 'img/enter-fullscreen.png';
+    fullscreenIcon.src = 'img/El_Pollo_Loco_icons/enter-fullscreen.png';
     fullscreenIcon.setAttribute('onclick', 'fullscreen()');
 }
 
 
 function setExitFullscreenIcon() {
     let fullscreenIcon = document.getElementById('fullscreen-icon');
-    fullscreenIcon.src = 'img/exit-fullscreen.png';
+    fullscreenIcon.src = 'img/El_Pollo_Loco_icons/exit-fullscreen.png';
     fullscreenIcon.setAttribute('onclick', 'exitFullscreen()');
 }
 
@@ -320,15 +320,42 @@ function stopBgMusic(audioId) {
 function isPaused(audelem) { return audelem.paused; }
 
 //----SHOW HIDE SCREENS----//
+
+function showInfoScreen() {
+    let infoScreen = document.getElementById('info-screen');
+    infoScreen.classList.remove('d-none');
+}
+
+
+function hideInfoScreen() {
+    let infoScreen = document.getElementById('info-screen');
+    infoScreen.classList.add('d-none');
+}
+
+
+function showKeyBindScreen() {
+    let keybindingsScreen = document.getElementById('keybindings-screen');
+    keybindingsScreen.classList.remove('d-none');
+}
+
+
+function hideKeyBindScreen() {
+    let keybindingsScreen = document.getElementById('keybindings-screen');
+    keybindingsScreen.classList.add('d-none');
+}
+
+
 function showFullscreenBtn() {
     let fullscreenBtn = document.getElementById('fullscreen-icon');
     fullscreenBtn.classList.remove('d-none');
 }
 
+
 function hideFullscreenBtn() {
     let fullscreenBtn = document.getElementById('fullscreen-icon');
     fullscreenBtn.classList.add('d-none');
 }
+
 
 function showYouLostScreen() {
     let youLostScreen = document.getElementById('lost-screen');
@@ -360,8 +387,6 @@ function hideGameoverScreen() {
 }
 
 
-
-
 function showVolumeBtn() {
     let volumeBtn = document.getElementById('volume-btn');
     volumeBtn.classList.remove('d-none');
@@ -385,10 +410,12 @@ function hidePauseScreen() {
     pauseScreen.classList.add('d-none');
 }
 
+
 function showLoadingScreen() {
     let loadingScreen = document.getElementById('loading-screen');
     loadingScreen.classList.remove('d-none')
 }
+
 
 function hideLoadingScreen() {
     let loadingScreen = document.getElementById('loading-screen');
