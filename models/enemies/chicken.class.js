@@ -99,7 +99,7 @@ class Chicken extends MovableObject {
 
     playChickenSoundDisplaced() {
         if (this.chicken_sound && !soundMuted) {
-            this.chicken_sound.start = 0.01 + Math.random() * 0.07;
+            //this.chicken_sound.start = 0.01 + Math.random() * 0.07;
             this.chicken_sound.play();
         }
     }

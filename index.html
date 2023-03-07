@@ -6,6 +6,7 @@
     <script src="models/keyboard.class.js"></script>
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
+    <script src="js/imageCacheData.js"></script>
     <script src="js/imageCache.js"></script>
 
     <script src="models/statusbar-health.class.js"></script>
@@ -13,29 +14,23 @@
     <script src="models/statusbar-coin.class.js"></script>
     <script src="models/statusbar-boss.class.js"></script>
 
-
-
     <script src="models/throwable-object.class.js"></script>
-
-
 
     <script src="models/enemies/chicken.class.js"></script>
     <script src="models/enemies/small_chicken.class.js"></script>
     <script src="models/enemies/endboss.class.js"></script>
 
-
     <script src="models/coin.class.js"></script>
     <script src="models/bottle.class.js"></script>
     <script src="models/character.class.js"></script>
-
 
     <script src="models/bg-object.class.js"></script>
     <script src="models/cloud.class.js"></script>
 
     <script src="models/level.class.js"></script>
     <script src="models/levels/level_1.js"></script>
-    <script src="js/game.js"></script>
 
+    <script src="js/game.js"></script>
 
     <link rel="stylesheet" href="style.css">
 
@@ -45,7 +40,7 @@
     <title>El Pollo Loco</title>
 </head>
 
-<body onload="awaitLoadingWorld()">
+<body onload="init()">
     <div class="content">
         <img class="browser-bg" src="img/background.png">
 
@@ -55,6 +50,7 @@
 
         <div id="fullscreen" class="fullscreen-div">
             <img src="img/El_Pollo_Loco_icons/high-volume.png" class="volume-btn" id="volume-btn" onclick="muteSound()">
+            <img src="img/enter-fullscreen.png" class="fullscreen-icon" id="fullscreen-icon" onclick="fullscreen()">
 
             <div class="touch-interface" id="touch-interface">
                 <img src="img/arrow_left.png" class="arrow-left" id="arrow-left">
@@ -88,18 +84,29 @@
                 <img src="img/loop.png" class="rotate-scale-up loading-arrow">
             </div>
 
-            <canvas id="canvas" width="720px" height="480px">
+            <div id="info-screen" class="info-screen d-none">
+                <span>Right Arrow:<br> Walk Right</span>
+                <span>Left Arrow:<br> Walk Left</span>
+                <span>Space:<br> Jump</span>
+                <span>D:<br> Throw Bottle</span>
+                <span>B:<br> enter Fullscreen</span>
+                <span>N:<br> exit Fullscreen</span>
+                <span>P:<br> Pause/Unpause</span>
+            </div>
 
+            <canvas id="canvas" width="720px" height="480px">
             </canvas>
 
         </div>
 
         <div class="user-help">
-            <span>Right Arrow: Walk Right</span>
-            <span>Left Arrow: Walk Left</span>
-            <span>Space: Jump</span>
-            <span>B: enter Fullscreen</span>
-            <span>N: exit Fullscreen</span>
+            <span>Right Arrow:<br> Walk Right</span>
+            <span>Left Arrow:<br> Walk Left</span>
+            <span>Space:<br> Jump</span>
+            <span>D:<br> Throw Bottle</span>
+            <span>B:<br> enter Fullscreen</span>
+            <span>N:<br> exit Fullscreen</span>
+            <span>P:<br> Pause/Unpause</span>
         </div>
 
     </div>

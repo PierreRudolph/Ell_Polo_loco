@@ -74,6 +74,15 @@ body {
     border-radius: 20px;
 }
 
+.fullscreen-icon {
+    cursor: pointer;
+    width: 45px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1;
+}
+
 .volume-btn {
     cursor: pointer;
     position: absolute;
@@ -136,14 +145,15 @@ canvas {
 .user-help {
     margin-top: 10px;
     font-size: 21px;
-    width: 718px;
-    height: 45px;
+    width: 750px;
+    height: 65px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     background-color: #f6ad7e;
     border-radius: 16px;
     letter-spacing: 0.5px;
+    line-height: 25px;
 }
 
 .d-none {

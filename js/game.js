@@ -6,75 +6,22 @@ let keyboard = new Keyboard();
 let intervalIds = [];
 let gamePaused = false;
 let soundMuted = false;
-let totalImageCache = {};
-let allImagesPaths = [
-    characterImagePaths,
-    chickenImagePaths,
-    smallChickenImagePaths,
-    endbossImagePaths,
-    bottleImagePath,
-    cloudImagePaths,
-    coinImagePaths,
-    statusbarBossImagePaths,
-    statusbarBottleImagePaths,
-    statusbarCoinImagePaths,
-    statusbarHealthImagePaths,
-    throwableObjectImagePaths,
-    AIR,
-    THIRD_LAYERV2,
-    SECOND_LAYERV2,
-    FIRST_LAYERV2,
-    THIRD_LAYERV1,
-    SECOND_LAYERV1,
-    FIRST_LAYERV1
-];
 
-async function loadAllImagesToCache() {
-    for (let i = 0; i < allImagesPaths.length; i++) {
-        await loadImagesListToCache(allImagesPaths[i]);
-    }
-}
-async function loadImagesListToCache(listList) {
-    for (let i = 0; i < listList.length; i++) {
-        const singleList = listList[i];
-        for (let j = 0; j < singleList.length; j++) {
-            const path = singleList[j];
-            try {
-                const img = await loadSingleImage(path);
-                totalImageCache[path] = img;
-            } catch (e) {
-                console.log(path)
-                console.log(e)
-            }
-        }
-        //increaseCacheLoadingCounter();
-    }
-}
 
-const loadSingleImage = path => {
-    return new Promise((resolve, reject) => {
-        const img = new Image()
-        img.crossOrigin = 'Anonymous' // to avoid CORS if used with Canvas
-        img.src = path
-        img.onload = () => {
-            resolve(img)
-        }
-        img.onerror = e => {
-            reject(e)
-        }
-    })
-}
 
 function startGame() {
     playSound();
-    init();
+    initLevel();
+    world = new World(canvas, keyboard);
+    setLongIdleTimeout();
     hideStartScreen();
     playBgMusic('game-bg-sound');
     checkIfFullscreen();
     hideVolumeBtn();
+    hideFullscreenBtn();
 }
 
-async function awaitLoadingWorld() {
+async function awaitLoadingImages() {
     showLoadingScreen();
     await loadAllImagesToCache();
     hideLoadingScreen();
@@ -82,16 +29,12 @@ async function awaitLoadingWorld() {
 
 
 function init() {
-    initLevel();
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
+    awaitLoadingImages();
     addCanvasBorderRadius();
     addCanvasBoxShadow();
-
-
     keyboardActions();
     bindBtsPressEvents();
-    setLongIdleTimeout();
 }
 
 
@@ -101,11 +44,13 @@ function pauseUnpauseGame() {
         stopGame();
         showPauseScreen();
         showVolumeBtn();
+        showFullscreenBtn();
     } else if (gamePaused) {
         playSound();
         hidePauseScreen();
         continueGame();
         hideVolumeBtn();
+        hideFullscreenBtn();
     }
 }
 
@@ -137,36 +82,13 @@ function continueGame() {
     }
 }
 
-function showLoadingScreen() {
-    let loadingScreen = document.getElementById('loading-screen');
-    loadingScreen.classList.remove('d-none')
-}
-
-function hideLoadingScreen() {
-    let loadingScreen = document.getElementById('loading-screen');
-    loadingScreen.classList.add('d-none')
-}
-
-function muteSound() {
-    let volumeBtn = document.getElementById('volume-btn');
-    if (!soundMuted) {
-        playSound();
-        soundMuted = true;
-        volumeBtn.src = 'img/El_Pollo_Loco_icons/mute.png';
-        stopBgMusic('game-bg-sound');
-        stopBgMusic('boss-bg-sound');
-    } else {
-        playSound();
-        soundMuted = false;
-        volumeBtn.src = 'img/El_Pollo_Loco_icons/high-volume.png';
-    }
-}
-
 
 function pushIntervalId(intervalId) {
     intervalIds.push(intervalId);
 }
 
+
+//--Keyboard-Binding---//
 window.addEventListener('keydown', (event) => {
     if (event.code == 'KeyB') {
         fullscreen();
@@ -184,7 +106,9 @@ window.addEventListener('keydown', (event) => {
 
 function keyboardActions() {
     window.addEventListener('keydown', (event) => {
-        resetTimeout();
+        if (world) {
+            resetTimeout();
+        }
         if (event.code == 'ArrowRight') {
             keyboard.RIGHT = true;
         }
@@ -222,7 +146,15 @@ function keyboardActions() {
     })
 }
 
+
+//--Touch-Binding---//
 function bindBtsPressEvents() {
+    document.getElementById('canvas').addEventListener('touchend', (e) => {//longIdle Touchlistener
+        e.preventDefault();
+        if (world) {
+            resetTimeout();
+        }
+    })
     document.getElementById('arrow-left').addEventListener('touchstart', (e) => {
         e.preventDefault();
         keyboard.LEFT = true;
@@ -258,9 +190,8 @@ function bindBtsPressEvents() {
     })
 }
 
-function isPaused(audelem) { return audelem.paused; }
 
-
+//---Character-LongIdleAnimation-Timout-//
 function setLongIdleTimeout() {
     timeout = setTimeout(() => {
         world.character.renderLongIdleImages = true;
@@ -274,18 +205,7 @@ function resetTimeout() {
     setLongIdleTimeout();
 }
 
-
-function playBgMusic(audioId) {
-    let music = document.getElementById(`${audioId}`);
-    if (isPaused(music) && !soundMuted) {
-        music.volume = 0.5;
-        music.load();
-        music.play();
-        music.loop = true;
-    }
-
-}
-
+//---Canvas-Style---//
 function addCanvasBoxShadow() {
     canvas.classList.add('canvas-shadow');
 }
@@ -298,12 +218,8 @@ function removeCanvasBorderRadius() {
     canvas.classList.remove('canvas-border-radius');
 }
 
-function stopBgMusic(audioId) {
-    let music = document.getElementById(`${audioId}`);
-    music.pause();
-}
 
-
+//--Fullscreen--//
 function fullscreen() {
     let fullscreen = document.getElementById('fullscreen');
     enterFullscreen(fullscreen);
@@ -320,6 +236,7 @@ function enterFullscreen(element) {
     } else if (element.webkitRequestFullscreen) {//ios Safari
         element.webkitRequestFullscreen();
     }
+    setExitFullscreenIcon();
 }
 
 
@@ -332,6 +249,7 @@ function exitFullscreen() {
         }
         playSound();
         addCanvasBorderRadius();
+        setEnterFullscreenIcon();
     }
 }
 
@@ -339,12 +257,28 @@ function exitFullscreen() {
 function checkIfFullscreen() {
     if (document.fullscreenElement || document.webkitFullscreenElement ||
         document.mozFullScreenElement) {
-        return 1;
+        return true;
     } else {
-        return 0;
+        return false;
     }
 }
 
+
+function setEnterFullscreenIcon() {
+    let fullscreenIcon = document.getElementById('fullscreen-icon');
+    fullscreenIcon.src = 'img/enter-fullscreen.png';
+    fullscreenIcon.setAttribute('onclick', 'fullscreen()');
+}
+
+
+function setExitFullscreenIcon() {
+    let fullscreenIcon = document.getElementById('fullscreen-icon');
+    fullscreenIcon.src = 'img/exit-fullscreen.png';
+    fullscreenIcon.setAttribute('onclick', 'exitFullscreen()');
+}
+
+
+//---Sound---//
 function playSound() {
     let sound = new Audio('audio/click_sound.mp3');
     sound.load();
@@ -352,16 +286,61 @@ function playSound() {
     sound.play();
 }
 
+function muteSound() {
+    let volumeBtn = document.getElementById('volume-btn');
+    if (!soundMuted) {
+        playSound();
+        soundMuted = true;
+        volumeBtn.src = 'img/El_Pollo_Loco_icons/mute.png';
+        stopBgMusic('game-bg-sound');
+        stopBgMusic('boss-bg-sound');
+    } else {
+        playSound();
+        soundMuted = false;
+        volumeBtn.src = 'img/El_Pollo_Loco_icons/high-volume.png';
+    }
+}
+
+function playBgMusic(audioId) {
+    let music = document.getElementById(`${audioId}`);
+    if (isPaused(music) && !soundMuted) {
+        music.volume = 0.5;
+        music.load();
+        music.play();
+        music.loop = true;
+    }
+
+}
+
+function stopBgMusic(audioId) {
+    let music = document.getElementById(`${audioId}`);
+    music.pause();
+}
+
+function isPaused(audelem) { return audelem.paused; }
+
 //----SHOW HIDE SCREENS----//
+function showFullscreenBtn() {
+    let fullscreenBtn = document.getElementById('fullscreen-icon');
+    fullscreenBtn.classList.remove('d-none');
+}
+
+function hideFullscreenBtn() {
+    let fullscreenBtn = document.getElementById('fullscreen-icon');
+    fullscreenBtn.classList.add('d-none');
+}
+
 function showYouLostScreen() {
     let youLostScreen = document.getElementById('lost-screen');
     youLostScreen.classList.remove('d-none');
 }
 
+
 function hideYouLostScreen() {
     let youLostScreen = document.getElementById('lost-screen');
     youLostScreen.classList.add('d-none');
 }
+
 
 function showGameoverScreen() {
     let gameoverScreen = document.getElementById('gameover-screen');
@@ -374,29 +353,46 @@ function hideStartScreen() {
     startScreen.classList.add('d-none');
 }
 
+
 function hideGameoverScreen() {
     let gameoverScreen = document.getElementById('gameover-screen');
     gameoverScreen.classList.add('d-none');
 }
+
+
+
 
 function showVolumeBtn() {
     let volumeBtn = document.getElementById('volume-btn');
     volumeBtn.classList.remove('d-none');
 }
 
+
 function hideVolumeBtn() {
     let volumeBtn = document.getElementById('volume-btn');
     volumeBtn.classList.add('d-none');
 }
+
 
 function showPauseScreen() {
     let pauseScreen = document.getElementById('pause-screen');
     pauseScreen.classList.remove('d-none');
 }
 
+
 function hidePauseScreen() {
     let pauseScreen = document.getElementById('pause-screen');
     pauseScreen.classList.add('d-none');
+}
+
+function showLoadingScreen() {
+    let loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.classList.remove('d-none')
+}
+
+function hideLoadingScreen() {
+    let loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.classList.add('d-none')
 }
 
 
