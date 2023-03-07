@@ -19,6 +19,8 @@ function startGame() {
     checkIfFullscreen();
     hideVolumeBtn();
     hideFullscreenBtn();
+    keyboardActions();
+    bindBtsPressEvents();
 }
 
 async function awaitLoadingImages() {
@@ -33,8 +35,6 @@ function init() {
     awaitLoadingImages();
     addCanvasBorderRadius();
     addCanvasBoxShadow();
-    keyboardActions();
-    bindBtsPressEvents();
 }
 
 
@@ -280,26 +280,34 @@ function setExitFullscreenIcon() {
 
 //---Sound---//
 function playSound() {
-    let sound = new Audio('audio/click_sound.mp3');
-    sound.load();
-    sound.volume = 0.5;
-    sound.play();
+    if (!soundMuted) {
+        let sound = new Audio('audio/click_sound.mp3');
+        sound.load();
+        sound.volume = 0.5;
+        sound.play();
+    }
 }
 
+
 function muteSound() {
-    let volumeBtn = document.getElementById('volume-btn');
     if (!soundMuted) {
-        playSound();
         soundMuted = true;
-        volumeBtn.src = 'img/El_Pollo_Loco_icons/mute.png';
+        changeVolumeBtnImg('img/El_Pollo_Loco_icons/mute.png')
         stopBgMusic('game-bg-sound');
         stopBgMusic('boss-bg-sound');
     } else {
-        playSound();
         soundMuted = false;
-        volumeBtn.src = 'img/El_Pollo_Loco_icons/high-volume.png';
+        changeVolumeBtnImg('img/El_Pollo_Loco_icons/high-volume.png')
     }
+    playSound();
 }
+
+
+function changeVolumeBtnImg(imgSrc) {
+    let volumeBtn = document.getElementById('volume-btn');
+    volumeBtn.src = imgSrc;
+}
+
 
 function playBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
@@ -324,24 +332,28 @@ function isPaused(audelem) { return audelem.paused; }
 function showInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.remove('d-none');
+    playSound();
 }
 
 
 function hideInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.add('d-none');
+    playSound();
 }
 
 
 function showKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.remove('d-none');
+    playSound();
 }
 
 
 function hideKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.add('d-none');
+    playSound();
 }
 
 
