@@ -203,9 +203,7 @@ class Character extends MovableObject {
             if (!soundMuted) {
                 this.dead_sound.play();
             }
-            stopGame();
-            showYouLostScreen();
-            gameOver = true;
+            gameLose();
         }
     }
 

@@ -228,12 +228,14 @@ class World {
         for (let i = 0; i < this.level.collectables.length; i++) {
             const collectable = this.level.collectables[i];
             if (this.character.isColliding(collectable)) {
-                if (collectable instanceof Coin && this.character.collected_bottles.length <= 4) {
+                if (collectable instanceof Coin && this.character.collected_coins.length <= 4) {
                     this.pushCollectedCoin(collectable);
-                } else if (collectable instanceof Bottle && this.character.collected_coins.length <= 4) {
+                    this.spliceObjFromArray(this.level.collectables, i);
+                } else if (collectable instanceof Bottle && this.character.collected_bottles.length <= 4) {
                     this.pushCollectedBottle(collectable)
+                    this.spliceObjFromArray(this.level.collectables, i);
                 }
-                this.spliceObjFromArray(this.level.collectables, i);
+
             }
         }
     }

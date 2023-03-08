@@ -6,11 +6,11 @@ let keyboard = new Keyboard();
 let intervalIds = [];
 let gamePaused = false;
 let soundMuted = false;
-let gameOver = false;
+let gameOverVar = false;
 
 
 function startGame() {
-    playClickSound();
+    playSound('audio/click_sound.mp3');
     initLevel();
     world = new World(canvas, keyboard);
     setLongIdleTimeout();
@@ -42,14 +42,13 @@ function init() {
 
 function pauseUnpauseGame() {
     if (!gamePaused) {
-        playClickSound();
+        playSound('audio/click_sound.mp3');
         stopGame();
         showPauseScreen();
         showVolumeBtn();
         showFullscreenBtn();
-    } else if (gamePaused && !gameOver) {
-
-        playClickSound();
+    } else if (gamePaused && !gameOverVar) {
+        playSound('audio/click_sound.mp3');
         hidePauseScreen();
         continueGame();
         hideVolumeBtn();
@@ -92,6 +91,19 @@ function pushIntervalId(intervalId) {
     intervalIds.push(intervalId);
 }
 
+function gameLose() {
+    stopGame();
+    showYouLoseScreen();
+    gameOverVar = true;
+    playSound('audio/game-lose.mp3');
+}
+
+function gameOver() {
+    stopGame();
+    showGameoverScreen();
+    playSound('audio/game-win.mp3');
+}
+
 
 //--Keyboard-Binding---//
 window.addEventListener('keydown', (event) => {
@@ -111,9 +123,7 @@ window.addEventListener('keydown', (event) => {
 
 function keyboardActions() {
     window.addEventListener('keydown', (event) => {
-        if (world) {
-            resetTimeout();
-        }
+        resetLongIdleTimeout();
         if (event.code == 'ArrowRight') {
             keyboard.RIGHT = true;
         }
@@ -154,14 +164,9 @@ function keyboardActions() {
 
 //--Touch-Binding---//
 function bindBtsPressEvents() {
-    document.getElementById('canvas').addEventListener('touchend', (e) => {//longIdle Touchlistener
-        e.preventDefault();
-        if (world) {
-            resetTimeout();
-        }
-    })
     document.getElementById('arrow-left').addEventListener('touchstart', (e) => {
         e.preventDefault();
+        resetLongIdleTimeout();
         keyboard.LEFT = true;
     })
     document.getElementById('arrow-left').addEventListener('touchend', (e) => {
@@ -170,6 +175,7 @@ function bindBtsPressEvents() {
     })
     document.getElementById('arrow-right').addEventListener('touchstart', (e) => {
         e.preventDefault();
+        resetLongIdleTimeout();
         keyboard.RIGHT = true;
     })
     document.getElementById('arrow-right').addEventListener('touchend', (e) => {
@@ -204,7 +210,7 @@ function setLongIdleTimeout() {
 }
 
 
-function resetTimeout() {
+function resetLongIdleTimeout() {
     world.character.renderLongIdleImages = false;
     clearTimeout(timeout);
     setLongIdleTimeout();
@@ -228,7 +234,7 @@ function removeCanvasBorderRadius() {
 function fullscreen() {
     let fullscreen = document.getElementById('fullscreen');
     enterFullscreen(fullscreen);
-    playClickSound();
+    playSound('audio/click_sound.mp3');
 }
 
 
@@ -252,7 +258,7 @@ function exitFullscreen() {
         } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
         }
-        playClickSound();
+        playSound('audio/click_sound.mp3');
         addCanvasBorderRadius();
         setEnterFullscreenIcon();
     }
@@ -284,9 +290,9 @@ function setExitFullscreenIcon() {
 
 
 //---Sound---//
-function playClickSound() {
+function playSound(imgSrc) {
     if (!soundMuted) {
-        let sound = new Audio('audio/click_sound.mp3');
+        let sound = new Audio(`${imgSrc}`);
         sound.load();
         sound.volume = 0.5;
         sound.play();
@@ -304,7 +310,7 @@ function pauseSound() {
         soundMuted = false;
         changeVolumeBtnImg('img/El_Pollo_Loco_icons/high-volume.png')
     }
-    playClickSound();
+    playSound('audio/click_sound.mp3');
 }
 
 
@@ -354,28 +360,28 @@ function isPaused(audelem) { return audelem.paused; }
 function showInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.remove('d-none');
-    playClickSound();
+    playSound();
 }
 
 
 function hideInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.add('d-none');
-    playClickSound();
+    playSound();
 }
 
 
 function showKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.remove('d-none');
-    playClickSound();
+    playSound();
 }
 
 
 function hideKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.add('d-none');
-    playClickSound();
+    playSound();
 }
 
 
@@ -391,7 +397,7 @@ function hideFullscreenBtn() {
 }
 
 
-function showYouLostScreen() {
+function showYouLoseScreen() {
     let youLostScreen = document.getElementById('lost-screen');
     youLostScreen.classList.remove('d-none');
 }

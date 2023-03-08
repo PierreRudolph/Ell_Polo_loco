@@ -215,8 +215,7 @@ class Endboss extends MovableObject {
             this.playAnimationOnce(this.IMAGES_DEAD);
             this.inBattle = false;
             stopBgMusic('boss-bg-sound');
-            stopGame();
-            showGameoverScreen();
+            gameOver();
         }
     }
 
