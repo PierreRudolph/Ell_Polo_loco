@@ -25,8 +25,7 @@ class StatusbarBoss extends DrawableObject {
 
 
     setPosition() {
-        setInterval(() => { this.X = this.world.level.enemies[5].X + 100 }, 1000 / 60);
-
+        setInterval(() => { this.X = this.world.level.enemies[9].X + 100 }, 1000 / 60);
     }
 
 

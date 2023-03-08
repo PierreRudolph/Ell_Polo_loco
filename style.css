@@ -99,13 +99,22 @@ body {
     bottom: 0px;
     border-radius: 20px;
     padding: 20px;
-    display: flex;
-    justify-content: end;
-    flex-direction: column;
+
     background-color: #f6ad7e;
+
+    padding-left: 90px;
+    padding-bottom: 50px;
+
+}
+
+.info-screen-div {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
     font-size: 17px;
     letter-spacing: 2px;
-    padding-left: 100px;
+    overflow: auto;
+    height: 100%;
 }
 
 .fullscreen-icon {

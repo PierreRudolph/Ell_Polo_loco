@@ -25,6 +25,7 @@ function startGame() {
     bindBtsPressEvents();
 }
 
+
 async function awaitLoadingImages() {
     showLoadingScreen();
     await loadAllImagesToCache();
@@ -41,7 +42,7 @@ function init() {
 
 
 function pauseUnpauseGame() {
-    if (!gamePaused) {
+    if (!gamePaused && world) {
         playSound('audio/click_sound.mp3');
         stopGame();
         showPauseScreen();
@@ -63,6 +64,7 @@ function stopGame() {
     gamePaused = true;
 }
 
+
 function restartGame() {
     gamePaused = false;
     startGame();
@@ -70,6 +72,7 @@ function restartGame() {
     hideGameoverScreen();
     hidePauseScreen();
 }
+
 
 function continueGame() {
     if (gamePaused) {
@@ -91,12 +94,14 @@ function pushIntervalId(intervalId) {
     intervalIds.push(intervalId);
 }
 
+
 function gameLose() {
     stopGame();
     showYouLoseScreen();
     gameOverVar = true;
     playSound('audio/game-lose.mp3');
 }
+
 
 function gameOver() {
     stopGame();
@@ -120,6 +125,7 @@ window.addEventListener('keydown', (event) => {
         pauseUnpauseGame();
     }
 })
+
 
 function keyboardActions() {
     window.addEventListener('keydown', (event) => {
@@ -216,14 +222,17 @@ function resetLongIdleTimeout() {
     setLongIdleTimeout();
 }
 
+
 //---Canvas-Style---//
 function addCanvasBoxShadow() {
     canvas.classList.add('canvas-shadow');
 }
 
+
 function addCanvasBorderRadius() {
     canvas.classList.add('canvas-border-radius');
 }
+
 
 function removeCanvasBorderRadius() {
     canvas.classList.remove('canvas-border-radius');
@@ -300,7 +309,7 @@ function playSound(imgSrc) {
 }
 
 
-function pauseSound() {
+function pauseAllSounds() {
     if (!soundMuted) {
         soundMuted = true;
         changeVolumeBtnImg('img/El_Pollo_Loco_icons/mute.png')
@@ -330,58 +339,63 @@ function playBgMusic(audioId) {
 
 }
 
+
 function stopChickenSound() {
     let chickenSound = document.getElementById('chicken-sound');
     pauseSound(chickenSound);
 }
+
 
 function stopSmallChickenSound() {
     let smallChickenSound = document.getElementById('small-chicken-sound');
     pauseSound(smallChickenSound);
 }
 
+
 function stopBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
     pauseSound(music);
 }
 
+
 function pauseSound(sound) { sound.pause() }
+
 
 function unPauseSound(sound) { sound.pause() }
 
+
 function isMuted(audelem) { return audelem.muted; }
+
 
 function isPaused(audelem) { return audelem.paused; }
 
-//function isPaused(audioId) { return audioId.paused; }
 
 //----SHOW HIDE SCREENS----//
-
 function showInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.remove('d-none');
-    playSound();
+    playSound('audio/click_sound.mp3');
 }
 
 
 function hideInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.add('d-none');
-    playSound();
+    playSound('audio/click_sound.mp3');
 }
 
 
 function showKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.remove('d-none');
-    playSound();
+    playSound('audio/click_sound.mp3');
 }
 
 
 function hideKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.add('d-none');
-    playSound();
+    playSound('audio/click_sound.mp3');
 }
 
 

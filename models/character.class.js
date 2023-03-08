@@ -3,7 +3,7 @@ class Character extends MovableObject {
     height = 220;
     width = 105;
     y = 200;
-    X = 200;
+    X = 20;
     //---Hitbox-offset--//
     offset = {
         right: 40,
@@ -137,7 +137,7 @@ class Character extends MovableObject {
             this.animationIfWalking();
             this.animationIfIsHurt();
             this.animationIfIsDead();
-        }, 1000 / 60)
+        }, 1000 / 60);
 
         let animationInterval2 = setInterval(() => { this.animationIfJumping(); }, 1000 / 12);
         let animationInterval3 = setInterval(() => { this.animationLongIdleOrIdle(); }, 225)
@@ -154,17 +154,21 @@ class Character extends MovableObject {
             this.moveRight();
             this.otherDirection = false;
             this.playCharWalkingSound();
-            this.world.camera_x = -this.X + 200;
+            if (this.X >= 200 && this.X < 2360) {
+                this.world.camera_x = -this.X + 200;
+            }
         }
     }
 
 
     ifKeyboardLeft() {
-        if (this.world.keyboard.LEFT && this.X > -100) {
+        if (this.world.keyboard.LEFT && this.X > 0) {
             this.moveLeft();
             this.otherDirection = true;
             this.playCharWalkingSound();
-            this.world.camera_x = -this.X + 200;
+            if (this.X >= 200 && this.X < 2360) {
+                this.world.camera_x = -this.X + 200;
+            }
         }
     }
 
@@ -188,8 +192,7 @@ class Character extends MovableObject {
 
 
     animationIfIsHurt() {
-        if (this.isHurt()) {
-            this.playHurtSounds();
+        if (this.isHurt() && !this.isDead()) {
             this.speed = 5;
             this.world.statusbarHealth.setPercentage(this.health);
             this.playAnimation(this.IMAGES_HURT);
@@ -231,21 +234,29 @@ class Character extends MovableObject {
     }
 
 
+    playSoundIfHurt() {
+        if (this.isHurt() && !this.isDead()) {
+            this.playHurtSounds();
+        }
+    }
+
+
     playHurtSounds() {
         if (this.currentPlayingHurtSound) {
-            if (!this.currentPlayingHurtSound.ended) {//set Time to be sure Audio is ended, before play next jumpSound
-                this.currentPlayingHurtSound.currentTime = 10.000;
+            if (this.currentPlayingHurtSound.ended) {
                 this.playHurtSound();
             }
         } else { this.playHurtSound(); }
+
     }
 
 
     playHurtSound() {
         if (!soundMuted) {
             this.currentPlayingHurtSound = new Audio(this.hurt_sounds[this.hurtSoundPathId]);
-            this.currentPlayingHurtSound.play();
             this.setHurtSoundPathId();
+            this.currentPlayingHurtSound.load();
+            this.currentPlayingHurtSound.play();
         }
     }
 

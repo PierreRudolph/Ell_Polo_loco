@@ -25,18 +25,14 @@ class World {
         this.pauseSoundIfAllChickenDead();
     }
 
+
     setWorld() {
         this.character.world = this;
         this.statusbarBoss.world = this;
-        this.level.enemies[5].world = this;
+        this.level.enemies[9].world = this;
     }
 
-    checkIfSoundMuted() {
-        if (soundMuted || gamePaused) {
-            this.pauseChickenSound();
-            this.pauseSmallChickenSound();
-        }
-    }
+
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
@@ -88,7 +84,7 @@ class World {
 
 
     drawCoinPyramid() {
-        let X = 250;
+        let X = 750;
         let y = 290;
         for (let i = 0; i < 2; i++) {
             const coin = this.level.collectables[i];
@@ -178,8 +174,10 @@ class World {
                 //this.character.speedY = 0; //optional, sieht dann so aus als ob chicken zerquetscht werden.
                 this.character.playJumpSounds();
             } else {
-                if (!this.character.isHurt()) {
+                if (!this.character.isHurt() && !this.character.isDead()) {
                     this.character.hit();
+                    this.character.playHurtSounds();
+
                 }
             }
         }
@@ -197,7 +195,7 @@ class World {
                     this.checkIfObjectOutOfWorld(obj, b);
                     if (obj.isColliding(enemy)) {
                         obj.noGravity = true;//throwableObject bekommt noGravity = true, wenn es kollidiert.
-                        if (!enemy.isHurt()) {
+                        if (!enemy.isHurt() && !enemy.isDead()) {
                             enemy.hit();
                         }
                         setTimeout(() => {
@@ -258,8 +256,8 @@ class World {
         this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20);
     }
 
-    pauseSoundIfAllChickenDead() {
 
+    pauseSoundIfAllChickenDead() {
         setInterval(() => {
             let chickenSound = document.getElementById('chicken-sound');
             let smallChickenSound = document.getElementById('small-chicken-sound');
@@ -282,26 +280,27 @@ class World {
 
 
     checkIfChickenAlive() {
-        let alive = 0;
-        this.level.enemies.forEach((e) => {
-            if (e instanceof Chicken) {
-                if (!e.isDead()) {
-                    alive++;
+        let aliveCounter = 0;
+        this.level.enemies.forEach((enemy) => {
+            if (enemy instanceof Chicken) {
+                if (!enemy.isDead()) {
+                    aliveCounter++;
                 }
             }
         })
-        return alive;
+        return aliveCounter;
     }
 
+
     checkIfSmallChickenAlive() {
-        let alive = 0;
-        this.level.enemies.forEach((e) => {
-            if (e instanceof SmallChicken) {
-                if (!e.isDead()) {
-                    alive++;
+        let aliveCounter = 0;
+        this.level.enemies.forEach((enemy) => {
+            if (enemy instanceof SmallChicken) {
+                if (!enemy.isDead()) {
+                    aliveCounter++;
                 }
             }
         })
-        return alive;
+        return aliveCounter;
     }
 }

@@ -10,7 +10,6 @@ class SmallChicken extends MovableObject {
         bottom: 15
     }
 
-
     chicken_hit_sound = new Audio('audio/small_chicken_hit.mp3');
 
     IMAGES_WALKING = [
@@ -29,13 +28,10 @@ class SmallChicken extends MovableObject {
         this.speed = 0.15 + Math.random() * 0.35; // Zahl zwischen 0 und 0.25
         this.animate();
         this.chicken_hit_sound.volume = 1;
-
     }
 
 
     animate() {
-
-        //this.playChickenSoundDisplaced();
         let animationInterval = setInterval(() => {
             this.animationIfWalking();
             this.actionsIfIsDead();
@@ -50,12 +46,6 @@ class SmallChicken extends MovableObject {
         intervalIds.push(movingInterval);
     }
 
-    awaitAudioLoad() {
-
-        this.chicken_sound.currentTime = (0.01 + Math.random() * 0.09);
-        this.chicken_sound.play();
-        this.chicken_sound.loop = true;
-    }
 
     animationIfWalking() {
         if (!this.isDead() && !this.isHurt()) {
