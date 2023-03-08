@@ -10,7 +10,7 @@ class SmallChicken extends MovableObject {
         bottom: 15
     }
 
-    chicken_sound = new Audio('audio/chicken_small.mp3');
+
     chicken_hit_sound = new Audio('audio/small_chicken_hit.mp3');
 
     IMAGES_WALKING = [
@@ -28,22 +28,20 @@ class SmallChicken extends MovableObject {
         this.X = 500 + Math.random() * 500; // Zahl zwischen 200 und 700
         this.speed = 0.15 + Math.random() * 0.35; // Zahl zwischen 0 und 0.25
         this.animate();
-        this.chicken_sound.volume = 0.5;
         this.chicken_hit_sound.volume = 1;
 
     }
 
 
     animate() {
-        this.playChickenSoundDisplaced();
+
+        //this.playChickenSoundDisplaced();
         let animationInterval = setInterval(() => {
             this.animationIfWalking();
             this.actionsIfIsDead();
             this.actionsIfIsHurt();
         }, 250)
-        setInterval(() => {
-            this.checkIfSoundMuted();
-        }, 1000 / 30);
+
         let movingInterval = setInterval(() => {
             this.moveLeftOrRight();
             this.setOtherDirection(100, 1000);
@@ -52,6 +50,12 @@ class SmallChicken extends MovableObject {
         intervalIds.push(movingInterval);
     }
 
+    awaitAudioLoad() {
+
+        this.chicken_sound.currentTime = (0.01 + Math.random() * 0.09);
+        this.chicken_sound.play();
+        this.chicken_sound.loop = true;
+    }
 
     animationIfWalking() {
         if (!this.isDead() && !this.isHurt()) {
@@ -62,7 +66,6 @@ class SmallChicken extends MovableObject {
 
     actionsIfIsDead() {
         if (this.isDead()) {
-            this.chicken_sound.pause();
             this.loadImage(this.IMAGE_DEAD);
         }
     }
@@ -81,21 +84,6 @@ class SmallChicken extends MovableObject {
         }
         if (!this.isDead() && !this.isHurt() && this.otherDirection) {
             this.moveRight();
-        }
-    }
-
-
-    playChickenSoundDisplaced() {
-        if (this.chicken_sound && !soundMuted) {
-            this.chicken_sound.start = (0.01 + Math.random() * 0.09);
-            this.chicken_sound.play();
-        }
-    }
-
-
-    checkIfSoundMuted() {
-        if (soundMuted || gamePaused) {
-            this.chicken_sound.pause();
         }
     }
 }

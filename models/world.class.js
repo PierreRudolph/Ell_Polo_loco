@@ -13,7 +13,6 @@ class World {
     canvas;
     camera_x = 0;
 
-
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -22,8 +21,9 @@ class World {
         this.setWorld();
         this.draw();
         this.run();
-    }
 
+        this.pauseSoundIfAllChickenDead();
+    }
 
     setWorld() {
         this.character.world = this;
@@ -31,7 +31,12 @@ class World {
         this.level.enemies[5].world = this;
     }
 
-
+    checkIfSoundMuted() {
+        if (soundMuted || gamePaused) {
+            this.pauseChickenSound();
+            this.pauseSmallChickenSound();
+        }
+    }
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
@@ -222,10 +227,10 @@ class World {
     collectBottleIfColliding() {
         for (let i = 0; i < this.level.collectables.length; i++) {
             const collectable = this.level.collectables[i];
-            if (this.character.isColliding(collectable) && this.character.collected_bottles.length <= 4) {
-                if (collectable instanceof Coin) {
+            if (this.character.isColliding(collectable)) {
+                if (collectable instanceof Coin && this.character.collected_bottles.length <= 4) {
                     this.pushCollectedCoin(collectable);
-                } else if (collectable instanceof Bottle) {
+                } else if (collectable instanceof Bottle && this.character.collected_coins.length <= 4) {
                     this.pushCollectedBottle(collectable)
                 }
                 this.spliceObjFromArray(this.level.collectables, i);
@@ -249,5 +254,52 @@ class World {
         }
         this.character.collected_coins.push(collectable);
         this.statusbarCoin.setPercentage(this.statusbarCoin.percentage += 20);
+    }
+
+    pauseSoundIfAllChickenDead() {
+
+        setInterval(() => {
+            let chickenSound = document.getElementById('chicken-sound');
+            let smallChickenSound = document.getElementById('small-chicken-sound');
+            let chickenAlive = this.checkIfChickenAlive();
+            let smallChickenAlive = this.checkIfSmallChickenAlive();
+
+            if (chickenAlive <= 0) {
+                if (!isPaused(chickenSound)) {
+                    pauseSound(chickenSound);
+                }
+            }
+
+            if (smallChickenAlive <= 0) {
+                if (!isPaused(smallChickenSound)) {
+                    pauseSound(smallChickenSound);
+                }
+            }
+        }, 1000 / 30);
+    }
+
+
+    checkIfChickenAlive() {
+        let alive = 0;
+        this.level.enemies.forEach((e) => {
+            if (e instanceof Chicken) {
+                if (!e.isDead()) {
+                    alive++;
+                }
+            }
+        })
+        return alive;
+    }
+
+    checkIfSmallChickenAlive() {
+        let alive = 0;
+        this.level.enemies.forEach((e) => {
+            if (e instanceof SmallChicken) {
+                if (!e.isDead()) {
+                    alive++;
+                }
+            }
+        })
+        return alive;
     }
 }

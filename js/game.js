@@ -10,12 +10,14 @@ let gameOver = false;
 
 
 function startGame() {
-    playSound();
+    playClickSound();
     initLevel();
     world = new World(canvas, keyboard);
     setLongIdleTimeout();
     hideStartScreen();
     playBgMusic('game-bg-sound');
+    playBgMusic('chicken-sound');
+    playBgMusic('small-chicken-sound');
     checkIfFullscreen();
     hideVolumeBtn();
     hideFullscreenBtn();
@@ -40,13 +42,14 @@ function init() {
 
 function pauseUnpauseGame() {
     if (!gamePaused) {
-        playSound();
+        playClickSound();
         stopGame();
         showPauseScreen();
         showVolumeBtn();
         showFullscreenBtn();
     } else if (gamePaused && !gameOver) {
-        playSound();
+
+        playClickSound();
         hidePauseScreen();
         continueGame();
         hideVolumeBtn();
@@ -78,6 +81,8 @@ function continueGame() {
         gamePaused = false;
         if (!soundMuted) {
             playBgMusic('game-bg-sound');
+            playBgMusic('chicken-sound');
+            playBgMusic('small-chicken-sound');
         }
     }
 }
@@ -223,7 +228,7 @@ function removeCanvasBorderRadius() {
 function fullscreen() {
     let fullscreen = document.getElementById('fullscreen');
     enterFullscreen(fullscreen);
-    playSound();
+    playClickSound();
 }
 
 
@@ -247,7 +252,7 @@ function exitFullscreen() {
         } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
         }
-        playSound();
+        playClickSound();
         addCanvasBorderRadius();
         setEnterFullscreenIcon();
     }
@@ -279,7 +284,7 @@ function setExitFullscreenIcon() {
 
 
 //---Sound---//
-function playSound() {
+function playClickSound() {
     if (!soundMuted) {
         let sound = new Audio('audio/click_sound.mp3');
         sound.load();
@@ -289,7 +294,7 @@ function playSound() {
 }
 
 
-function muteSound() {
+function pauseSound() {
     if (!soundMuted) {
         soundMuted = true;
         changeVolumeBtnImg('img/El_Pollo_Loco_icons/mute.png')
@@ -299,7 +304,7 @@ function muteSound() {
         soundMuted = false;
         changeVolumeBtnImg('img/El_Pollo_Loco_icons/high-volume.png')
     }
-    playSound();
+    playClickSound();
 }
 
 
@@ -311,49 +316,66 @@ function changeVolumeBtnImg(imgSrc) {
 
 function playBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
-    if (isPaused(music) && !soundMuted) {
+    if (isPaused(music) && !soundMuted && !gamePaused) {
         music.volume = 0.5;
-        music.load();
         music.play();
         music.loop = true;
     }
 
 }
 
-function stopBgMusic(audioId) {
-    let music = document.getElementById(`${audioId}`);
-    music.pause();
+function stopChickenSound() {
+    let chickenSound = document.getElementById('chicken-sound');
+    pauseSound(chickenSound);
 }
 
+function stopSmallChickenSound() {
+    let smallChickenSound = document.getElementById('small-chicken-sound');
+    pauseSound(smallChickenSound);
+}
+
+function stopBgMusic(audioId) {
+    let music = document.getElementById(`${audioId}`);
+    pauseSound(music);
+}
+
+function pauseSound(sound) { sound.pause() }
+
+function unPauseSound(sound) { sound.pause() }
+
+function isMuted(audelem) { return audelem.muted; }
+
 function isPaused(audelem) { return audelem.paused; }
+
+//function isPaused(audioId) { return audioId.paused; }
 
 //----SHOW HIDE SCREENS----//
 
 function showInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.remove('d-none');
-    playSound();
+    playClickSound();
 }
 
 
 function hideInfoScreen() {
     let infoScreen = document.getElementById('info-screen');
     infoScreen.classList.add('d-none');
-    playSound();
+    playClickSound();
 }
 
 
 function showKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.remove('d-none');
-    playSound();
+    playClickSound();
 }
 
 
 function hideKeyBindScreen() {
     let keybindingsScreen = document.getElementById('keybindings-screen');
     keybindingsScreen.classList.add('d-none');
-    playSound();
+    playClickSound();
 }
 
 
