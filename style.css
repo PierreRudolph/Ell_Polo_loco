@@ -29,8 +29,6 @@ body {
 
 .start-screen {
     width: 100%;
-    /*object-fit: contain;*/
-    border-radius: 20px;
 }
 
 .gameover-screen-div {
@@ -196,7 +194,7 @@ canvas {
     height: 100%;
 }
 
-.canvas-border-radius {
+.border-radius {
     border-radius: 20px;
 }
 

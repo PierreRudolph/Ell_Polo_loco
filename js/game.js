@@ -221,7 +221,16 @@ function resetLongIdleTimeout() {
     clearTimeout(timeout);
     setLongIdleTimeout();
 }
+//--StartScreen Border-Radius--//
+function addStartScreenBorderRadius() {
+    let startScreen = document.getElementById('start-screen');
+    startScreen.classList.add('border-radius');
+}
 
+function removeStartScreenBorderRadius() {
+    let startScreen = document.getElementById('start-screen');
+    startScreen.classList.remove('border-radius');
+}
 
 //---Canvas-Style---//
 function addCanvasBoxShadow() {
@@ -230,12 +239,12 @@ function addCanvasBoxShadow() {
 
 
 function addCanvasBorderRadius() {
-    canvas.classList.add('canvas-border-radius');
+    canvas.classList.add('border-radius');
 }
 
 
 function removeCanvasBorderRadius() {
-    canvas.classList.remove('canvas-border-radius');
+    canvas.classList.remove('border-radius');
 }
 
 
@@ -249,6 +258,7 @@ function setFullscreen() {
 
 function enterFullscreen(element) {
     removeCanvasBorderRadius();
+    removeStartScreenBorderRadius()
     if (element.requestFullscreen) {
         element.requestFullscreen();
     } else if (element.msRequestFullscreen) {//for IE 11
@@ -268,6 +278,7 @@ function setExitFullscreen() {
             document.webkitExitFullscreen();
         }
         playSound('audio/click_sound.mp3');
+        addStartScreenBorderRadius()
         addCanvasBorderRadius();
         setEnterFullscreenIcon();
     }
@@ -438,7 +449,7 @@ function showGameoverScreen() {
 
 
 function hideStartScreen() {
-    let startScreen = document.getElementById('start-screen');
+    let startScreen = document.getElementById('start-screen-div');
     startScreen.classList.add('d-none');
 }
 
