@@ -1,7 +1,6 @@
 class ThrowableObject extends MovableObject {
     speed = 15;
-    splashSound = new Audio('audio/glass_smash.mp3');
-    throwSound = new Audio('audio/woosh.mp3');
+
 
     offset = {
         right: 10,
@@ -43,45 +42,32 @@ class ThrowableObject extends MovableObject {
 
     throw(otherDirection) {
         this.applyGravity();
-        this.throwSound.volume = 0.5;
-        this.splashSound.volume = 0.5;
+
         if (!soundMuted) {
-            this.throwSound.play();
-        }
+            playSoundPerId('woosh-sound');
 
-        let throwInterval = setInterval(() => {
-            if (!this.noGravity) {
-                this.playAnimation(this.IMAGES_ROTATION);
-                this.setObjectThrowingDirection(otherDirection);
-            } else {
-                this.applyGravity(this.noGravity);
-                //this.correctLandingPoint(otherDirection);
-                setInterval(() => { this.playAnimation(this.IMAGES_SPLASH); }, 50);
-                clearInterval(throwInterval);
-                if (!soundMuted) {
-                    this.splashSound.play();
+            let throwInterval = setInterval(() => {
+                if (!this.noGravity) {
+                    this.playAnimation(this.IMAGES_ROTATION);
+                    this.setObjectThrowingDirection(otherDirection);
+                } else {
+                    this.applyGravity(this.noGravity);
+                    setInterval(() => { this.playAnimation(this.IMAGES_SPLASH); }, 50);
+                    clearInterval(throwInterval);
+                    if (!soundMuted) {
+                        playSoundPerId('splash-sound');
+                    }
                 }
-            }
-        }, 25);
-        pushIntervalId(throwInterval);
+            }, 25);
+            pushIntervalId(throwInterval);
+        }
     }
-
 
     setObjectThrowingDirection(otherDirection) {
         if (otherDirection) {
             this.X -= this.speed;
         } else {
             this.X += this.speed;
-        }
-    }
-
-
-    correctLandingPoint(otherDirection) {
-        this.y += 20;
-        if (otherDirection) {
-            this.X -= 20;
-        } else {
-            this.X += 20;
         }
     }
 }

@@ -302,7 +302,7 @@ function setExitFullscreenIcon() {
 function playSound(imgSrc) {
     if (!soundMuted) {
         let sound = new Audio(`${imgSrc}`);
-        sound.load();
+        sound.currentTime = 0;
         sound.volume = 0.5;
         sound.play();
     }
@@ -326,6 +326,14 @@ function pauseAllSounds() {
 function changeVolumeBtnImg(imgSrc) {
     let volumeBtn = document.getElementById('volume-btn');
     volumeBtn.src = imgSrc;
+}
+
+
+function playSoundPerId(audioId) {
+    let sound = document.getElementById(`${audioId}`);
+    //sound.load();
+    sound.currentTime = 0;
+    sound.play();
 }
 
 
