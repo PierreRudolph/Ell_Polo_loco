@@ -113,13 +113,13 @@ function gameOver() {
 //--Keyboard-Binding---//
 window.addEventListener('keydown', (event) => {
     if (event.code == 'KeyB') {
-        fullscreen();
+        setFullscreen();
     }
     if (event.code == 'KeyN') {
-        exitFullscreen();
+        setExitFullscreen();
     }
     if (event.code == 'Escape') {
-        exitFullscreen();
+        setExitFullscreen();
     }
     if (event.code == 'KeyP') {
         pauseUnpauseGame();
@@ -240,7 +240,7 @@ function removeCanvasBorderRadius() {
 
 
 //--Fullscreen--//
-function fullscreen() {
+function setFullscreen() {
     let fullscreen = document.getElementById('fullscreen');
     enterFullscreen(fullscreen);
     playSound('audio/click_sound.mp3');
@@ -260,7 +260,7 @@ function enterFullscreen(element) {
 }
 
 
-function exitFullscreen() {
+function setExitFullscreen() {
     if (checkIfFullscreen()) {
         if (document.exitFullscreen) {
             document.exitFullscreen();
@@ -287,14 +287,14 @@ function checkIfFullscreen() {
 function setEnterFullscreenIcon() {
     let fullscreenIcon = document.getElementById('fullscreen-icon');
     fullscreenIcon.src = 'img/El_Pollo_Loco_icons/enter-fullscreen.png';
-    fullscreenIcon.setAttribute('onclick', 'fullscreen()');
+    fullscreenIcon.setAttribute('onclick', 'setFullscreen()');
 }
 
 
 function setExitFullscreenIcon() {
     let fullscreenIcon = document.getElementById('fullscreen-icon');
     fullscreenIcon.src = 'img/El_Pollo_Loco_icons/exit-fullscreen.png';
-    fullscreenIcon.setAttribute('onclick', 'exitFullscreen()');
+    fullscreenIcon.setAttribute('onclick', 'setExitFullscreen()');
 }
 
 
