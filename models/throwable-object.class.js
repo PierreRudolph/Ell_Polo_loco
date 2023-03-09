@@ -42,12 +42,13 @@ class ThrowableObject extends MovableObject {
 
     throw(otherDirection) {
         this.applyGravity();
-
+        this.speedY = 20;
         if (!soundMuted) {
             playSoundPerId('woosh-sound');
 
             let throwInterval = setInterval(() => {
                 if (!this.noGravity) {
+
                     this.playAnimation(this.IMAGES_ROTATION);
                     this.setObjectThrowingDirection(otherDirection);
                 } else {
