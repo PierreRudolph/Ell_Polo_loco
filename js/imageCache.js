@@ -43,7 +43,6 @@ async function loadImagesListToCache(listList) {
                 console.log(e)
             }
         }
-        //increaseCacheLoadingCounter();
     }
 }
 

@@ -113,7 +113,7 @@ function reActivateAnimations() {
 }
 
 /**
- * This function
+ * This function add a InteravalId to intervalIds Array.
  * 
  * @param {Number} intervalId - This is the number of the Inteval, to push.
  */
@@ -303,6 +303,15 @@ function removeStartScreenBorderRadius() {
     startScreen.classList.remove('border-radius');
 }
 
+function addGameOverScreenBorderRadius() {
+    let gameOverScreen = docuemtn.getElementById('gameover-screen');
+    gameOverScreen.classList.add('border-radius');
+}
+
+function removeGameOverScreenBorderRadius() {
+    let gameOverScreen = docuemtn.getElementById('gameover-screen');
+    gameOverScreen.classList.remove('border-radius');
+}
 //---Canvas-Style---//
 function addCanvasBoxShadow() {
     canvas.classList.add('canvas-shadow');
@@ -328,6 +337,7 @@ function setFullscreen() {
 
 
 function enterFullscreen(element) {
+    removeGameOverScreenBorderRadius();
     removeCanvasBorderRadius();
     removeStartScreenBorderRadius()
     enterFullscreenCompatibility(element);
@@ -350,7 +360,8 @@ function setExitFullscreen() {
     if (checkIfFullscreen()) {
         exitFullscreenCompatibility();
         playSound('audio/click_sound.mp3');
-        addStartScreenBorderRadius()
+        addStartScreenBorderRadius();
+        addGameOverScreenBorderRadius();
         addCanvasBorderRadius();
         setEnterFullscreenIcon();
     }
