@@ -76,7 +76,7 @@ function restartGame() {
 
 function continueGame() {
     if (gamePaused) {
-        world.throwableObjects.forEach(obj => { obj.throw() /*obj.noGravity = false*/ });
+        world.throwableObjects.forEach(obj => { obj.throw() });
         world.level.enemies.forEach(enemy => { enemy.animate() });
         world.level.clouds.forEach(cloud => { cloud.animate() });
         world.character.animate();
@@ -342,7 +342,6 @@ function changeVolumeBtnImg(imgSrc) {
 
 function playSoundPerId(audioId) {
     let sound = document.getElementById(`${audioId}`);
-    //sound.load();
     sound.currentTime = 0;
     sound.play();
 }

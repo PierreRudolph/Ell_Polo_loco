@@ -36,10 +36,29 @@ class World {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
+        this.drawObjects();
+        this.ctx.translate(-this.camera_x, 0);
 
+        // Draw wird immer wieder aufgerufen
+        let self = this;
+        this.recallDraw(self);
+    }
+
+
+    drawObjects() {
+        this.drawBackgroundObjects();
+        this.drawFixedObjects();
+        this.drawMoveableObjects();
+    }
+
+
+    drawBackgroundObjects() {
         this.addObjectsToMap(this.level.BackgroundObjects);
         this.addObjectsToMap(this.level.clouds);
+    }
 
+
+    drawFixedObjects() {
         this.ctx.translate(-this.camera_x, 0);
         //---Space for fixed Objects---//
         this.addToMap(this.statusbarHealth);
@@ -47,17 +66,19 @@ class World {
         this.addToMap(this.statusbarBottle);
         //---Space for fixed Objects---//
         this.ctx.translate(this.camera_x, 0);
+    }
 
+
+    drawMoveableObjects() {
         this.addToMap(this.statusbarBoss);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
         this.addObjectsToMap(this.throwableObjects);
         this.addToMap(this.character);
+    }
 
-        this.ctx.translate(-this.camera_x, 0);
 
-        // Draw wird immer wieder aufgerufen
-        let self = this;
+    recallDraw(self) {
         requestAnimationFrame(() => {
             self.draw();
         });
@@ -76,7 +97,6 @@ class World {
             this.flipImage(model);
         }
         model.draw(this.ctx);
-        //model.drawHitbox(this.ctx);
         if (model.otherDirection) {
             this.flipImageBack(model);
         }
@@ -171,7 +191,6 @@ class World {
             if (this.character.isAboveGround() && enemy instanceof Chicken || this.character.isAboveGround() && enemy instanceof SmallChicken) {
                 enemy.kill();
                 this.character.jump();
-                //this.character.speedY = 0; //optional, sieht dann so aus als ob chicken zerquetscht werden.
                 this.character.playJumpSounds();
             } else {
                 if (!this.character.isHurt() && !this.character.isDead()) {
@@ -193,17 +212,22 @@ class World {
                 for (let b = 0; b < this.throwableObjects.length; b++) {
                     const obj = this.throwableObjects[b];
                     this.checkIfObjectOutOfWorld(obj, b);
-                    if (obj.isColliding(enemy)) {
-                        obj.noGravity = true;//throwableObject bekommt noGravity = true, wenn es kollidiert.
-                        if (!enemy.isHurt() && !enemy.isDead()) {
-                            enemy.hit();
-                        }
-                        setTimeout(() => {
-                            this.spliceObjFromArray(this.throwableObjects, b)
-                        }, 150);
-                    }
+                    this.ifThrowableObjectCollided(obj, enemy, b)
                 }
             }
+        }
+    }
+
+
+    ifThrowableObjectCollided(obj, enemy, b) {
+        if (obj.isColliding(enemy)) {
+            obj.noGravity = true;//throwableObject bekommt noGravity = true, wenn es kollidiert.
+            if (!enemy.isHurt() && !enemy.isDead()) {
+                enemy.hit();
+            }
+            setTimeout(() => {
+                this.spliceObjFromArray(this.throwableObjects, b)
+            }, 150);
         }
     }
 
