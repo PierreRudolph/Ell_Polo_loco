@@ -1,7 +1,6 @@
 class ThrowableObject extends MovableObject {
     speed = 15;
 
-
     offset = {
         right: 10,
         left: 10,

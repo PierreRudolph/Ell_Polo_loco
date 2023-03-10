@@ -16,7 +16,6 @@ function startGame() {
     setLongIdleTimeout();
     startMusic();
     prepareScreen();
-    bindKeyboardAndTouch();
 }
 
 
@@ -46,6 +45,7 @@ function init() {
     awaitLoadingImages();
     addCanvasBorderRadius();
     addCanvasBoxShadow();
+    bindKeyboardAndTouch();
 }
 
 
@@ -288,9 +288,11 @@ function setLongIdleTimeout() {
 
 
 function resetLongIdleTimeout() {
-    world.character.renderLongIdleImages = false;
-    clearTimeout(timeout);
-    setLongIdleTimeout();
+    if (world) {
+        world.character.renderLongIdleImages = false;
+        clearTimeout(timeout);
+        setLongIdleTimeout();
+    }
 }
 //--StartScreen Border-Radius--//
 function addStartScreenBorderRadius() {
