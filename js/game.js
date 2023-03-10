@@ -112,7 +112,11 @@ function reActivateAnimations() {
     world.character.animate();
 }
 
-
+/**
+ * This function
+ * 
+ * @param {Number} intervalId - This is the number of the Inteval, to push.
+ */
 function pushIntervalId(intervalId) {
     intervalIds.push(intervalId);
 }

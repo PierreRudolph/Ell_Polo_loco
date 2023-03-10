@@ -188,7 +188,7 @@ class World {
 
     checkCharCollisions(enemy) {
         if (this.character.isColliding(enemy)) {
-            if (this.character.isAboveGround() && enemy instanceof Chicken || this.character.isAboveGround() && enemy instanceof SmallChicken) {
+            if (this.character.isAboveGround() && enemy instanceof Chicken && !this.character.isHurt() || this.character.isAboveGround() && enemy instanceof SmallChicken && !this.character.isHurt()) {
                 enemy.kill();
                 this.character.jump();
                 this.character.playJumpSounds();
