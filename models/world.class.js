@@ -192,11 +192,11 @@ class World {
                 enemy.kill();
                 this.character.jump();
                 this.character.playJumpSounds();
+                setTimeout(() => { enemy.width = 0; }, 3000);
             } else {
                 if (!this.character.isHurt() && !this.character.isDead()) {
                     this.character.hit();
                     this.character.playHurtSounds();
-
                 }
             }
         }
