@@ -163,7 +163,7 @@ function removeStartScreenBorderRadius() {
     let startScreen = document.getElementById('start-screen');
     startScreen.classList.remove('border-radius');
 }
-
+//--GameoverScreen Border-Radius--//
 function addGameOverScreenBorderRadius() {
     let gameOverScreen = document.getElementById('gameover-screen');
     gameOverScreen.classList.add('border-radius');

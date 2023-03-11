@@ -44,24 +44,25 @@ class ThrowableObject extends MovableObject {
         this.speedY = 20;
         if (!soundMuted) {
             playSoundPerId('woosh-sound');
-
-            let throwInterval = setInterval(() => {
-                if (!this.noGravity) {
-
-                    this.playAnimation(this.IMAGES_ROTATION);
-                    this.setObjectThrowingDirection(otherDirection);
-                } else {
-                    this.applyGravity(this.noGravity);
-                    setInterval(() => { this.playAnimation(this.IMAGES_SPLASH); }, 50);
-                    clearInterval(throwInterval);
-                    if (!soundMuted) {
-                        playSoundPerId('splash-sound');
-                    }
-                }
-            }, 25);
-            pushIntervalId(throwInterval);
         }
+
+        let throwInterval = setInterval(() => {
+            if (!this.noGravity) {
+
+                this.playAnimation(this.IMAGES_ROTATION);
+                this.setObjectThrowingDirection(otherDirection);
+            } else {
+                this.applyGravity(this.noGravity);
+                setInterval(() => { this.playAnimation(this.IMAGES_SPLASH); }, 50);
+                clearInterval(throwInterval);
+                if (!soundMuted) {
+                    playSoundPerId('splash-sound');
+                }
+            }
+        }, 25);
+        pushIntervalId(throwInterval);
     }
+
 
     setObjectThrowingDirection(otherDirection) {
         if (otherDirection) {
