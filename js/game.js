@@ -86,6 +86,7 @@ function stopGame() {
 
 
 function restartGame() {
+    gameOverVar = false;
     gamePaused = false;
     startGame();
     hideYouLostScreen();
@@ -306,12 +307,12 @@ function removeStartScreenBorderRadius() {
 }
 
 function addGameOverScreenBorderRadius() {
-    let gameOverScreen = docuemtn.getElementById('gameover-screen');
+    let gameOverScreen = document.getElementById('gameover-screen');
     gameOverScreen.classList.add('border-radius');
 }
 
 function removeGameOverScreenBorderRadius() {
-    let gameOverScreen = docuemtn.getElementById('gameover-screen');
+    let gameOverScreen = document.getElementById('gameover-screen');
     gameOverScreen.classList.remove('border-radius');
 }
 //---Canvas-Style---//
