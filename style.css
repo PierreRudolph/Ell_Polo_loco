@@ -365,9 +365,19 @@ canvas {
     }
 }
 
-@media only screen and (max-height:760px) and (min-width:550px) {
+@media only screen and (max-height:720px) {
     .rotate-message-screen {
         display: none !important;
+    }
+
+    .touch-interface {
+        display: block !important;
+    }
+}
+
+@media only screen and (max-height:720px) and (max-width:400px) {
+    .rotate-message-screen {
+        display: flex !important;
     }
 }
 
