@@ -139,7 +139,11 @@ class Character extends MovableObject {
             this.animationIfIsDead();
         }, 1000 / 60);
 
-        let animationInterval2 = setInterval(() => { this.animationIfJumping(); }, 1000 / 12);
+        let animationInterval2 = setInterval(() => {
+            this.animationIfJumping();
+            this.IfNearEndbossShowStatusbar();
+        }, 1000 / 12);
+
         let animationInterval3 = setInterval(() => { this.animationLongIdleOrIdle(); }, 225)
 
         intervalIds.push(keyboardInterval);
@@ -215,6 +219,25 @@ class Character extends MovableObject {
         if (this.isAboveGround()) {
             this.playAnimation(this.IMAGES_JUMPING);
         }
+    }
+
+
+    IfNearEndbossShowStatusbar() {
+        if (this.isNearBoss() || this.endbossIsInBattle()) {
+            this.world.statusbarBoss.width = 200;
+        } else {
+            this.world.statusbarBoss.width = 0;
+        }
+    }
+
+
+    isNearBoss() {
+        return this.X > 1200;
+    }
+
+
+    endbossIsInBattle() {
+        return this.world.level.enemies[9].inBattle;
     }
 
 

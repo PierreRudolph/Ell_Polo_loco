@@ -1,6 +1,5 @@
 class StatusbarBoss extends DrawableObject {
     percentage = 100;
-    world;
 
     IMAGES = [
         'img/7_statusbars/2_statusbar_endboss/0.png',
@@ -16,16 +15,10 @@ class StatusbarBoss extends DrawableObject {
         super();
         this.loadImageCache(this.IMAGES);
         this.setPercentage(100);
-        this.X = 600;
-        this.y = 0;
-        this.width = 200;
+        this.X = 500;
+        this.y = 10;
+        this.width = 0;
         this.height = 60;
-        this.setPosition();
-    }
-
-
-    setPosition() {
-        setInterval(() => { this.X = this.world.level.enemies[9].X + 100 }, 1000 / 60);
     }
 
 

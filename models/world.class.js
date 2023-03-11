@@ -28,7 +28,6 @@ class World {
 
     setWorld() {
         this.character.world = this;
-        this.statusbarBoss.world = this;
         this.level.enemies[9].world = this;
     }
 
@@ -64,13 +63,14 @@ class World {
         this.addToMap(this.statusbarHealth);
         this.addToMap(this.statusbarCoin);
         this.addToMap(this.statusbarBottle);
+        this.addToMap(this.statusbarBoss);
         //---Space for fixed Objects---//
         this.ctx.translate(this.camera_x, 0);
     }
 
 
     drawMoveableObjects() {
-        this.addToMap(this.statusbarBoss);
+
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.collectables);
         this.addObjectsToMap(this.throwableObjects);
