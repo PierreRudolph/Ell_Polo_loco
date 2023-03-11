@@ -307,6 +307,13 @@ canvas {
     letter-spacing: 2px;
 }
 
+.mDeviceTip {
+    font-size: 21px;
+    position: absolute;
+    bottom: 10px;
+    letter-spacing: 1px;
+}
+
 .rotate-scale-up {
     -webkit-animation: rotate-scale-up 0.85s linear infinite both;
     animation: rotate-scale-up 0.85s linear infinite both;
@@ -419,6 +426,10 @@ canvas {
     .loading-screen {
         border-radius: 0em;
     }
+
+    .mDeviceTip {
+        display: block !important;
+    }
 }
 
 @media only screen and (max-width:620px) {
@@ -478,5 +489,9 @@ canvas {
 
     .pause-screen {
         border-radius: 0em;
+    }
+
+    .mDeviceTip {
+        display: block !important;
     }
 }
