@@ -198,9 +198,7 @@ function setFullscreen() {
 
 
 function enterFullscreen(element) {
-    removeGameOverScreenBorderRadius();
-    removeCanvasBorderRadius();
-    removeStartScreenBorderRadius()
+    prepareScreensForEnterFullscreen();
     enterFullscreenCompatibility(element);
     setExitFullscreenIcon();
 }
@@ -221,11 +219,23 @@ function setExitFullscreen() {
     if (checkIfFullscreen()) {
         exitFullscreenCompatibility();
         playSound('audio/click_sound.mp3');
-        addStartScreenBorderRadius();
-        addGameOverScreenBorderRadius();
-        addCanvasBorderRadius();
+        prepareScreensForExitFullscreen();
         setEnterFullscreenIcon();
     }
+}
+
+
+function prepareScreensForEnterFullscreen() {
+    removeGameOverScreenBorderRadius();
+    removeCanvasBorderRadius();
+    removeStartScreenBorderRadius()
+}
+
+
+function prepareScreensForExitFullscreen() {
+    addStartScreenBorderRadius();
+    addGameOverScreenBorderRadius();
+    addCanvasBorderRadius();
 }
 
 
@@ -269,10 +279,15 @@ function startMusic() {
     playBgMusic('small-chicken-sound');
 }
 
-
-function playSound(imgSrc) {
+/**
+ * This function generate a new Audio, set the Start-time at Zero, the Volume half the
+ * maximum, and start playing. 
+ * 
+ * @param {string} audioSrc -path of the Audio, to play.
+ */
+function playSound(audioSrc) {
     if (!soundMuted) {
-        let sound = new Audio(`${imgSrc}`);
+        let sound = new Audio(`${audioSrc}`);
         sound.currentTime = 0;
         sound.volume = 0.5;
         sound.play();
@@ -294,12 +309,20 @@ function pauseAllSounds() {
 }
 
 
+/**
+ * 
+ * @param {string} imgSrc -path of the img, wich replace the last path of the img. 
+ */
 function changeVolumeBtnImg(imgSrc) {
     let volumeBtn = document.getElementById('volume-btn');
     volumeBtn.src = imgSrc;
 }
 
 
+/**
+ * 
+ * @param {string} audioId -Id of the Audio element, to play. 
+ */
 function playSoundPerId(audioId) {
     let sound = document.getElementById(`${audioId}`);
     sound.currentTime = 0;
@@ -307,6 +330,11 @@ function playSoundPerId(audioId) {
 }
 
 
+/**
+ * This function plays Music endless(in a Loop), only when the Music is not playing already.
+ * 
+ * @param {string} audioId -Id of the Audio element, to play.
+ */
 function playBgMusic(audioId) {
     let music = document.getElementById(`${audioId}`);
     if (isPaused(music) && !soundMuted && !gamePaused) {
@@ -314,7 +342,6 @@ function playBgMusic(audioId) {
         music.play();
         music.loop = true;
     }
-
 }
 
 
@@ -336,15 +363,26 @@ function stopBgMusic(audioId) {
 }
 
 
-function pauseSound(sound) { sound.pause() }
+/**
+ * 
+ * @param {audio} sound -Audio Element. 
+ */
+function pauseSound(sound) { sound.pause(); }
 
 
-function unPauseSound(sound) { sound.pause() }
-
-
+/**
+ * 
+ * @param {audio} audelem -Audio Element. 
+ * @returns true or false, depending if auioelement is Muted, or Not.
+ */
 function isMuted(audelem) { return audelem.muted; }
 
 
+/**
+ * 
+ * @param {audio} audelem -Audio Element. 
+ * @returns true or false, depending if auioelement is Paused, or Not.
+ */
 function isPaused(audelem) { return audelem.paused; }
 
 

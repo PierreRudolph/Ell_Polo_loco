@@ -30,6 +30,10 @@ async function loadAllImagesToCache() {
 }
 
 
+/**
+ * 
+ * @param {array} listList -Array with Arrays inside.
+ */
 async function loadImagesListToCache(listList) {
     for (let i = 0; i < listList.length; i++) {
         const singleList = listList[i];
