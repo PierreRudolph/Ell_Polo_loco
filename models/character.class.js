@@ -207,6 +207,7 @@ class Character extends MovableObject {
     animationIfIsDead() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
+            this.world.statusbarHealth.setPercentage(this.health);//be sure Statusbar is set to Zero.
             if (!soundMuted) {
                 this.dead_sound.play();
             }
