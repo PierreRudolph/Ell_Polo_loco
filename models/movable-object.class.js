@@ -10,7 +10,6 @@ class MovableObject extends DrawableObject {
     inBattle = false;
     noGravity = false;
 
-
     applyGravity(noGravity) {
         let gravityInterval = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
@@ -45,6 +44,18 @@ class MovableObject extends DrawableObject {
         let path = images[this.imageIndex];
         this.img = this.imageCache[path];
         this.currentImage++;
+    }
+
+
+    playJumpAnimation(images) {
+        this.imageIndex = this.currentJumpImage % images.length;
+        let path = images[this.imageIndex];
+        this.img = this.imageCache[path];
+        this.currentJumpImage++;
+
+        if (this.currentJumpImage > images.length) {
+            this.currentJumpImage = 0;
+        }
     }
 
 

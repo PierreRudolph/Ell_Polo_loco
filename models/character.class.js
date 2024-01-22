@@ -17,7 +17,7 @@ class Character extends MovableObject {
     collected_coins = [];
     //---Other---//
     world;
-    speed = 5;
+    speed = 10;
     renderLongIdleImages = false;
     //---Images----//
     IMAGES_WALKING = [
@@ -137,11 +137,12 @@ class Character extends MovableObject {
             this.animationIfWalking();
             this.animationIfIsHurt();
             this.animationIfIsDead();
-        }, 1000 / 60);
+        }, 1000 / 12);
 
         let animationInterval2 = setInterval(() => {
             this.animationIfJumping();
             this.IfNearEndbossShowStatusbar();
+            this.resetCurrentJumpImage();
         }, 1000 / 12);
 
         let animationInterval3 = setInterval(() => { this.animationLongIdleOrIdle(); }, 225)
@@ -188,7 +189,7 @@ class Character extends MovableObject {
     animationIfWalking() {
         if (!this.isAboveGround()) {
             if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.speed = 10;
+                this.speed = 4;
                 this.playAnimation(this.IMAGES_WALKING);
             }
         }
@@ -197,7 +198,7 @@ class Character extends MovableObject {
 
     animationIfIsHurt() {
         if (this.isHurt() && !this.isDead()) {
-            this.speed = 5;
+            this.speed = 2;
             this.world.statusbarHealth.setPercentage(this.health);
             this.playAnimation(this.IMAGES_HURT);
         }
@@ -218,7 +219,7 @@ class Character extends MovableObject {
 
     animationIfJumping() {
         if (this.isAboveGround()) {
-            this.playAnimation(this.IMAGES_JUMPING);
+            this.playJumpAnimation(this.IMAGES_JUMPING);
         }
     }
 
@@ -228,6 +229,13 @@ class Character extends MovableObject {
             this.world.statusbarBoss.width = 200;
         } else {
             this.world.statusbarBoss.width = 0;
+        }
+    }
+
+
+    resetCurrentJumpImage() {
+        if (!this.isAboveGround()) {
+            this.currentJumpImage = 0;
         }
     }
 

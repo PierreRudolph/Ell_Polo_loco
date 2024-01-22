@@ -153,26 +153,34 @@ function resetLongIdleTimeout() {
         setLongIdleTimeout();
     }
 }
+
+
 //--StartScreen Border-Radius--//
 function addStartScreenBorderRadius() {
     let startScreen = document.getElementById('start-screen');
     startScreen.classList.add('border-radius');
 }
 
+
 function removeStartScreenBorderRadius() {
     let startScreen = document.getElementById('start-screen');
     startScreen.classList.remove('border-radius');
 }
+
+
 //--GameoverScreen Border-Radius--//
 function addGameOverScreenBorderRadius() {
     let gameOverScreen = document.getElementById('gameover-screen');
     gameOverScreen.classList.add('border-radius');
 }
 
+
 function removeGameOverScreenBorderRadius() {
     let gameOverScreen = document.getElementById('gameover-screen');
     gameOverScreen.classList.remove('border-radius');
 }
+
+
 //---Canvas-Style---//
 function addCanvasBoxShadow() {
     canvas.classList.add('canvas-shadow');
@@ -384,10 +392,3 @@ function isMuted(audelem) { return audelem.muted; }
  * @returns true or false, depending if auioelement is Paused, or Not.
  */
 function isPaused(audelem) { return audelem.paused; }
-
-
-
-
-
-
-
